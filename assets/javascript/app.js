@@ -1,47 +1,77 @@
 
 
-var computerChoices = ["r", "p", "s"];
-      var wins = 0;
-      var losses = 0;
-      var ties = 0;
+    
+var yourChoice = "none";
+var opponentChoices = ["rock", "paper", "scissors"];
+var theirChoice;
+var opPic = "";
+var uPic = "";
+var winCount = 0;
+var lossCount = 0;
+var tieCount = 0;
 
-      document.onkeyup = function(event) {
-        var userGuess = event.key;
-        var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
-        // This is the logic that determines who wins the game.
-        if ((userGuess === "r") || (userGuess === "p") || (userGuess === "s")) {
-          // If we choose rock and the computer guesses scissors, increment our wins variable.
-          if ((userGuess === "r") && (computerGuess === "s")) {
-            wins++;
-          }
-          // If we choose rock and the computer guesses paper, increment our losses variable.
-          if ((userGuess === "r") && (computerGuess === "p")) {
-            losses++;
-          }
-          // If we choose scissors and the computer guesses rock, increment our losses variable.
-          if ((userGuess === "s") && (computerGuess === "r")) {
-            losses++;
-          }
-          // If we choose scissors and the computer guesses paper, increment our wins variable.
-          if ((userGuess === "s") && (computerGuess === "p")) {
-            wins++;
-          }
-          // If we choose paper and the computer guesses rock, increment our wins variable.
-          if ((userGuess === "p") && (computerGuess === "r")) {
-            wins++;
-          }
-          // If we choose paper and the computer guesses scissors, increment our losses variable.
-          if ((userGuess === "p") && (computerGuess === "s")) {
-            losses++;
-          }
-          // If we choose the same thing as the computer, increment our ties variable.
-          if (userGuess === computerGuess) {
-            ties++;
-          }
-          var html = "<p>Press r, p or s to start playing!</p>" +
-          "<p>wins: " + wins + "</p>" +
-          "<p>losses: " + losses + "</p>" +
-          "<p>ties: " + ties + "</p>";
-          document.querySelector("#game").innerHTML = html;
-        }
-      };
+function rock() {
+    yourChoice = "rock";
+    console.log(yourChoice);
+    shoot();
+    uPic = "assets/images/rock2.jpg"
+    imgChange();
+}
+function paper() {
+    yourChoice = "paper";
+    console.log(yourChoice);
+    shoot();
+    uPic = "assets/images/paper2.jpg";
+    imgChange();
+}
+function scissors() {
+    yourChoice = "scissors";
+    console.log(yourChoice);
+    shoot();
+    uPic = "assets/images/scissors2.jpg";
+    imgChange();
+}
+function shoot() {
+    theirChoice = opponentChoices[Math.floor(Math.random()*3)];
+    console.log(theirChoice);
+    switch (theirChoice) {
+      case "rock":
+        opPic = "assets/images/rock2.jpg";
+        break;
+      case "scissors":
+        opPic = "assets/images/scissors2.jpg";
+        break;
+      case "paper":
+        opPic = "assets/images/paper2.jpg";
+        break;
+    }
+    if (yourChoice === theirChoice) {
+        console.log("you: " + yourChoice + " them: " + theirChoice + " tied");
+        $("#headLine").html("It's a TIE");
+        tieCount++;
+    } else if (yourChoice === "rock" && theirChoice === "scissors") {
+        console.log("you: " + yourChoice + " them: " + theirChoice + " you won");
+        $("#headLine").html("You Won!!!!");
+        winCount++;
+    } else if (yourChoice === "paper" && theirChoice === "rock") {
+        console.log("you: " + yourChoice + " them: " + theirChoice + " you won");
+        $("#headLine").html("You Won!!!!");
+        winCount++;
+    } else if (yourChoice === "scissors" && theirChoice === "paper") {
+        console.log("you: " + yourChoice + " them: " + theirChoice + " you won");
+        $("#headLine").html("You Won!!!!");
+        winCount++;
+    } else {
+        console.log("you: " + yourChoice + " them: " + theirChoice + " you lost");
+        $("#headLine").html("You Lost...");
+        lossCount++;
+    }
+    $("#win").html("Wins: " + winCount);
+    $("#win").append(" - Losses: " + lossCount);
+    $("#win").append(" - Ties: " + tieCount);
+
+}
+function imgChange() {
+    $("#yourPic").attr("src", uPic);
+    $("#opponentPic").attr("src", opPic);
+}

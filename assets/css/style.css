@@ -1,0 +1,27 @@
+body {
+	max-width: 700px;
+	margin: 0px auto;
+	display: flex;
+	min-height: 100vh;	
+}
+img#yourPic {
+	max-height: 200px;
+	max-width: 200px;
+}
+img#opponentPic {
+	max-height: 200px;
+	max-width: 200px;
+}
+h1.jumbotron {
+	font-size: 30px;
+}
+.mysize-btn {
+	height: 75px;
+	width: 150px;
+	border-radius: 25px;
+	font-size: 24px;
+	margin: 10px;
+}
+.inline {
+
+}

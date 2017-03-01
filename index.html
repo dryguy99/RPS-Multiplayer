@@ -3,15 +3,49 @@
   <head>
     <meta charset="UTF-8">
     <title>Rock Paper Scissors | Timothy Dry</title>
+    <link rel="icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
   </head>
   <body>
 
-    <div id="game">
-      <p>Press r, p or s to start playing!</p>
+   <body>
+    <div class="container-fluid">
+        
+        <div class="row">
+            <div class="col-lg-12 jumbotron text-center">
+                <h2>Play!</h2>
+                <h1>ROCK PAPER SCISSORS</h1>
+                <h2 id="headLine">Go for it!</h2>
+                <h4 id="win" class="inline"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 text-center">
+                <h3>Opponent</h3>
+            </div>
+            <div class="col-lg-6 text-center">
+                <h3>You</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 text-center">
+                <img id="opponentPic" class="mysize" src="assets/images/rock1.jpg">
+            </div>
+       
+            <div class="col-lg-6 text-center">
+                <img id="yourPic" src="assets/images/scissors2.jpg">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <button class="btn-primary mysize-btn" onclick="rock()">Rock</button>
+                <button class="btn-success mysize-btn" onclick="paper()">Paper</button>
+                <button class="btn-info mysize-btn" onclick="scissors()">Scissors</button>
+            </div>
+        </div>
     </div>
-
     
     <script src="https://www.gstatic.com/firebasejs/3.7.0/firebase.js"></script>
     <script>
