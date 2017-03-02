@@ -1,16 +1,14 @@
 body {
-	max-width: 700px;
+	max-width: 900px;
 	margin: 0px auto;
 	display: flex;
 	min-height: 100vh;	
+	box-sizing: border-box;
 }
-img#yourPic {
-	max-height: 200px;
-	max-width: 200px;
-}
-img#opponentPic {
-	max-height: 200px;
-	max-width: 200px;
+
+img.mysize {
+	max-height: 150px;
+	max-width: 300px;
 }
 h1.jumbotron {
 	font-size: 30px;
@@ -22,6 +20,39 @@ h1.jumbotron {
 	font-size: 24px;
 	margin: 10px;
 }
-.inline {
+.mygame {
+	display: none;
+}
+#win{
+	font-size: 26px;
+	font-weight: 600;
+}
+h2#status {
+	font-size: 30px;
+	font-weight: 600;
+	padding: 20px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.player {
+	display: none;
+}
 
+p.check {
+	font-weight: 600;
+	font-size: 20px;
+}
+#p1check {
+	margin-left: 20px;
+}
+
+input[type=checkbox] {
+ -ms-transform: scale(1.5); /* IE */
+ -moz-transform: scale(1.5); /* FF */
+ -webkit-transform: scale(1.5); /* Safari and Chrome */
+ -o-transform: scale(1.5); /* Opera */
+  padding-right: 10px;
+}
+.check {
+	line-height: 2.0;
 }

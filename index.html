@@ -13,38 +13,75 @@
     <div class="container-fluid">
         
         <div class="row">
-            <div class="col-lg-12 jumbotron text-center">
-                <h2>Play!</h2>
+            <div class="col-lg-12 text-center">
                 <h1>ROCK PAPER SCISSORS</h1>
-                <h2 id="headLine">Go for it!</h2>
-                <h4 id="win" class="inline"></h4>
+                <h1>Multiplayer</h1><br>
+                <h2 id="status" class="mygame">Go for it!</h2><br>
+                <h4 id="win" class="mygame"></h4>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-6 text-center">
-                <h3>Opponent</h3>
+
+        <div class="row setup">
+          <div class="col-lg-2">
+          </div>
+          <div class="col-lg-8 text-center">
+            <div class="check">
+              <p class="check">Do you want to play the computer or another player?<br>
+              <input id="computercheck" class="check" type="checkbox" name="computer" value="false"> Computer 
+              <input id="p1check" class="check" type="checkbox" name="p2" value="false"> Another Player<br>
+              <br>
+              </p>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
+                <input id="name" type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
             </div>
-            <div class="col-lg-6 text-center">
-                <h3>You</h3>
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon glyphicon glyphicon-envelope" id="basic-addon1"></span>
+                <input id="email" type="email" class="form-control" placeholder="John.Smith@gmail.com" email="John.Smith@gmail.com" aria-describedby="basic-addon1">
+            </div>
+            <div>
+              <br>
+              <button id="submit" class="btn btn-lg btn-warning" type="submit">SUBMIT</button>
+            </div>
+          </div>
+          <div class="col-lg-2">
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+            <div class="col-lg-6 text-center mygame">
+                <h3 id="p1" class="p[ayer"></h3>
+            </div>
+            <div class="col-lg-6 text-center mygame">
+                <h3 id="p2" class="p[ayer"></h3>
             </div>
         </div>
+
         <div class="row">
             <div class="col-lg-6 text-center">
-                <img id="opponentPic" class="mysize" src="assets/images/rock1.jpg">
+                <img id="opponentPic" class="mysize mygame" src="assets/images/rock1.jpg">
             </div>
        
             <div class="col-lg-6 text-center">
-                <img id="yourPic" src="assets/images/scissors2.jpg">
+                <img id="yourPic" class="mysize mygame" src="assets/images/scissors2.jpg">
             </div>
         </div>
         
         <div class="row">
             <div class="col-lg-12 text-center">
-                <button class="btn-primary mysize-btn" onclick="rock()">Rock</button>
-                <button class="btn-success mysize-btn" onclick="paper()">Paper</button>
-                <button class="btn-info mysize-btn" onclick="scissors()">Scissors</button>
+                <button id="rock" class="btn-primary mysize-btn mygame" value="rock">Rock</button>
+                <button id="paper" class="btn-success mysize-btn mygame" value="paper">Paper</button>
+                <button id="scissors" class="btn-info mysize-btn mygame" value="scissors">Scissors</button>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+              <button id="reset" class="btn-warning mysize-btn mygame" value="reset">Reset</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="https://www.gstatic.com/firebasejs/3.7.0/firebase.js"></script>
