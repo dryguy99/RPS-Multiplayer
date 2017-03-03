@@ -51,8 +51,11 @@ input[type=checkbox] {
  -moz-transform: scale(1.5); /* FF */
  -webkit-transform: scale(1.5); /* Safari and Chrome */
  -o-transform: scale(1.5); /* Opera */
-  padding-right: 10px;
+ 
 }
 .check {
 	line-height: 2.0;
+}
+button:focus {
+	outline: none;
 }
