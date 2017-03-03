@@ -1,4 +1,21 @@
 
+// Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyBVJQT-3Q7kuy7KCg8rS7LOx8s1VAe5-lo",
+        authDomain: "rps-multiplayer-bcafb.firebaseapp.com",
+        databaseURL: "https://rps-multiplayer-bcafb.firebaseio.com",
+        storageBucket: "rps-multiplayer-bcafb.appspot.com",
+        messagingSenderId: "1015633302315"
+      };
+      firebase.initializeApp(config);
+
+    // Get Elements
+    const Name = $("#name").val().trim();
+    const Email = $("#email").val().trim();
+    const Password = $("#password").val().trim();
+    const Login = $("#login").val().trim();
+    const SignUp = $("#signup").val().trim();
+
 
 var name1 = "Nobody";
 var name2 = "Me";   
@@ -135,7 +152,7 @@ function setPlayers () {
   $("#p2").html(name2);
 }
 function inputNames() {
-  $("#submit").on("click", function () {
+  $(".login").on("click", function () {
     name2 = $("#name").val().trim();
     check();
     $(".player").css("display", "inline");
@@ -144,6 +161,7 @@ function inputNames() {
       alert("There is no one to play!");
       $("#name").empty();
       $("#email").empty();
+      $("#password").empty();
       $(".player").css("display", "none");
       $(".mygame").css("display", "none");
       inputNames();
