@@ -16,48 +16,59 @@
         
         <div class="row">
             <div class="col-lg-12 text-center">
-                <h1>ROCK PAPER SCISSORS</h1>
-                <h1>Multiplayer</h1><br>
-                <h2 id="status" class="mygame">Go for it!</h2><br>
-                <h4 id="win" class="mygame"></h4>
+              <!-- add nav pills to top during gameplay for logout & reset-->
+              <div class="text-center">
+                  <button id="logout" class="btn btn-md btn-warning mynav" type="submit">LOGOUT</button>
+                  <button id="reset" class="btn-warning btn-md mygame" value="reset">Reset</button>
+              </div> 
+              <h1>ROCK PAPER SCISSORS</h1>
+              <h1>Multiplayer</h1><br>
+              <h2 id="status" class="mygame">Go for it!</h2><br>
+              <h4 id="win" class="mygame"></h4>
             </div>
         </div>
-
+        
+        <!-- signin section -->
         <div class="row setup">
-          <div class="col-lg-2">
+          <div class="col-sm-0 col-md-1 col-lg-2">
           </div>
-          <div class="col-lg-8 text-center">
-            <div class="check">
+          <div class="col-sm-12 col-md-10 col-lg-8 text-center">
+            <div class="check"> <!--set up checkbox for multiplayer or computer-->
               <p class="check">Do you want to play the computer or another player?<br>
-              <input id="computercheck" class="check" type="checkbox" name="computer" value="false"> Computer 
-              <input id="p1check" class="check" type="checkbox" name="p2" value="false"> Another Player<br>
-              <br>
+                <input id="computercheck" class="check" type="checkbox" name="computer" value="false"> Computer 
+                <input id="p1check" class="check" type="checkbox" name="p2" value="false"> Another Player
+                <br>
+                <br>
               </p>
+            </div>
+            
+            <!--input info for sign in to game -->
             <div class="input-group input-group-lg">
                 <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
                 <input id="name" type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
             </div>
             <div class="input-group input-group-lg">
-                <span class="input-group-addon glyphicon glyphicon-envelope" id="basic-addon1"></span>
-                <input id="email" type="email" class="form-control" placeholder="John.Smith@gmail.com" email="John.Smith@gmail.com" aria-describedby="basic-addon1">
+              <span class="input-group-addon glyphicon glyphicon-envelope" id="basic-addon1"></span>
+              <input id="email" type="email" class="form-control" placeholder="John.Smith@gmail.com" email="John.Smith@gmail.com" aria-describedby="basic-addon1">
             </div>
             <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="basic-addon1"><i class="fa fa-key" aria-hidden="true"></i></span>
-                <input id="password" type="password" class="form-control" placeholder="Password" password="#" aria-describedby="basic-addon1">
+              <span class="input-group-addon" id="basic-addon1"><i class="fa fa-key" aria-hidden="true"></i></span>
+              <input id="password" type="password" class="form-control" placeholder="Password" password="#" aria-describedby="basic-addon1">
             </div>
+
             <div>
-              <br>
-              <span>
+              <br><!-- buttons for signin or signup-->
               <button id="login" class="btn btn-lg btn-warning login" type="submit">LOGIN</button>
               <button id="signup" class="btn btn-lg btn-warning login" type="submit">SIGNUP</button>
               <button id="logout" class="btn btn-lg btn-warning logout" type="submit">LOGOUT</button>
             </div>
           </div>
-          <div class="col-lg-2">
+          <div class="col-sm-0 col-md-1 col-lg-2">
           </div>
-        </div>
-      </div>
 
+        </div><!--end signin section-->
+      
+        <!-- this section replaces the signin section during gameplay-->
         <div class="row">
             <div class="col-lg-6 text-center mygame">
                 <h3 id="p1" class="p[ayer"></h3>
@@ -66,7 +77,8 @@
                 <h3 id="p2" class="p[ayer"></h3>
             </div>
         </div>
-
+        
+        <!-- add players pictures to represent their choices-->
         <div class="row">
             <div class="col-lg-6 text-center">
                 <img id="opponentPic" class="mysize mygame" src="assets/images/rock1.jpg">
@@ -77,17 +89,12 @@
             </div>
         </div>
         
+        <!-- add rock paper scissors butoons-->
         <div class="row">
             <div class="col-lg-12 text-center">
                 <button id="rock" class="btn-primary mysize-btn mygame" value="rock">Rock</button>
                 <button id="paper" class="btn-success mysize-btn mygame" value="paper">Paper</button>
                 <button id="scissors" class="btn-info mysize-btn mygame" value="scissors">Scissors</button>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-12 text-center">
-              <button id="reset" class="btn-warning mysize-btn mygame" value="reset">Reset</button>
             </div>
         </div>
 

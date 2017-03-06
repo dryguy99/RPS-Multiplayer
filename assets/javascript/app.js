@@ -9,6 +9,48 @@
       };
       firebase.initializeApp(config);
 
+var name1 = "Nobody";
+var name2 = "Me";   
+var yourChoice = "none";
+var opponentChoices = ["rock", "paper", "scissors"];
+var theirChoice;
+var opPic = "";
+var uPic = "";
+var p1winCount = 0;
+var p1lossCount = 0;
+var p1tieCount = 0;
+var p2winCount = 0;
+var p2lossCount = 0;
+var p2tieCount = 0;
+var computer = true;
+var p1 = false;
+var cwin = 0;
+var closs = 0;
+var ctie = 0;
+var players = 2;
+
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithRedirect(provider);
+
+    firebase.auth().getRedirectResult().then(function(result) {
+      if (result.credential) {
+       // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = result.credential.accessToken;
+      // ...
+      }
+      // The signed-in user info.
+      var user = result.user;
+      }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+      });
+
     // Get Elements
     const txtName = document.getElementById("name");
     const txtEmail = document.getElementById("email");
@@ -26,14 +68,16 @@
       const auth = firebase.auth();
       const promise = auth.signInWithEmailAndPassword(email, pass);
       //signin
-      
+      signupIn();
       promise.catch(e => console.log(e.message));
     });
 
     //add signup event
+
     btnSignUp.addEventListener("click", e => {
       //get email and password
       // TODO: Check 4 real emails
+
       const email = txtEmail.value;
       const pass = txtPassword.value;
       const name = txtName.value;
@@ -41,44 +85,54 @@
       // Sign In
       const promise = auth.createUserWithEmailAndPassword(email, pass);
       promise.catch(e => console.log(e.message));
+      signupIn ();
     });
+  
     // add sign out event
     btnLogout.addEventListener("click", e => {
       firebase.auth().onAuthStateChanged(firebaseUser => {
+        console.log(firebaseUser);
         firebase.auth().signOut();
+        $(".mynav").css("display", "inline");
+        $("#logout").css("display", "none");
+        if (players < 2) {
+          players++;
+        }
+        userLogin ();
         });
      });
+function signupIn () {
+  if (players === 2) {
+    name2 = name;
+    players--;
+  }
+  else if (players === 1) {
+    name1 = name;
+    players = 0;
+  }
+  else { alert("There are already 2 players playing! Please wait for one to finish.");}
+}
+
+function userLogin () {
+  $(".signin").css("display", "inline");
+
+}
+
 
     // Add a realtime listener
     firebase.auth().onAuthStateChanged(firebaseUser => {
-      if (firebase) {
+      if (firebaseUser) {
         console.log(firebaseUser);
-        $("#logout").css("display", "inline");}
+        $("#logout").css("display", "inline");
+      }
         else {
           console.log("Not Logged in");
+          userLogin();
         }
       
     });
 
 
-var name1 = "Nobody";
-var name2 = "Me";   
-var yourChoice = "none";
-var opponentChoices = ["rock", "paper", "scissors"];
-var theirChoice;
-var opPic = "";
-var uPic = "";
-var p1winCount = 0;
-var p1lossCount = 0;
-var p1tieCount = 0;
-var p2winCount = 0;
-var p2lossCount = 0;
-var p2tieCount = 0;
-var computer = false;
-var p1 = false;
-var cwin = 0;
-var closs = 0;
-var ctie = 0;
 
 function rock() {
     yourChoice = "rock";
@@ -196,12 +250,13 @@ function setPlayers () {
   $("#p2").html(name2);
 }
 function inputNames() {
+
   $(".login").on("click", function () {
     name2 = $("#name").val().trim();
     check();
     $(".player").css("display", "inline");
     $(".mygame").css("display", "inline");
-    if (!computer) {
+    if (!computer && !p1) {
       alert("There is no one to play!");
       $("#name").empty();
       $("#email").empty();
@@ -218,6 +273,7 @@ function inputNames() {
 }
 
 $(document).ready( function runGame() {
+    $('#computercheck').prop('checked', true);
     check();
     inputNames();
     resetGame();
