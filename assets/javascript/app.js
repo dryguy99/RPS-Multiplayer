@@ -41,21 +41,53 @@ var emailSent = false;
 var twoPlayers = false;
 var pclassArray = ["p2", "p1"];
 var runafter1change = true;
+var choice1 = "x";
+var choice2 = "x";
 
 var playerRef = dataRef.ref('twoPlayers');
 var player2Ref = dataRef.ref('player2');
-
+var bothpicRef = dataRef.ref('bothpick');
+var choice1Ref = dataRef.ref('choice1');
+var choice2Ref = dataRef.ref('choice2');
+var twoPlayersRef = dataRef.ref('twoPlayers');
 // check key data values before login
-        console.log("check firebase values after login");
-        playerRef.on('value', function(snapshot) {
-          resetGame();
-          console.log("checked twoPlayers value");
-        });
-        player2Ref.on('value', function(snapshot) {
-          if (snapshot.val()) {
-            n2 = snapshot.val();}
-          console.log("updating n2 from firebase: " + n2);
-        });
+    bothpicRef.on('value', function(snapshot) {
+      bothpick = snapshot.val();
+      if (bothpick) {
+        shoot();
+        bothpick = false;
+      }
+    });
+
+    twoPlayersRef.on('value', function(snapshot) {
+      twoPlayers = snapshot.val();
+    });
+
+    choice1Ref.on('value', function(snapshot) {
+      choice1 = snapshot.val();
+      if (twoPlayers) {
+          shoot();}
+    });
+
+    choice2Ref.on('value', function(snapshot) {
+      choice2 = snapshot.val();
+      if (twoPlayers) {
+          shoot();}
+    });
+
+    console.log("check firebase values before login");
+
+    playerRef.on('value', function(snapshot) {
+      resetGame();
+      console.log("checked twoPlayers value");
+    });
+
+    player2Ref.on('value', function(snapshot) {
+      if (snapshot.val()) {
+        n2 = snapshot.val();}
+      console.log("updating n2 from firebase: " + n2);
+    });
+
 //-----------------------------------------------------------------
 
 // allow signin with google
@@ -198,6 +230,8 @@ function mylogIn () {
     name1 = $("#name").val().trim();
     signupIn();}
 }
+//-----------------------------------------------------------------
+
 function clearFields () {
   $("#name").html("");
   $("#email").html("");
@@ -273,22 +307,21 @@ function signupIn () {
     
     if (n1) {
       twoPlayers = true;
-      dataRef.ref("user1").push({
-        user1: name1,
+      dataRef.ref().update({
+        userone: name1,
         choice1: opponentChoice,
-        opPic: opPic
+        opPic: opPic,
+        twoPlayers: twoPlayers
       });
-      dataRef.ref("user1").update({
-        twoPlayers: twoPlayers});
       console.log("setup player 1: " + name1 + " 279");
       displayPlayer1 ();
-      setPlayers;
+      setPlayers();
     }
     else if (n2) {
-      dataRef.ref("user2").push({
-        user2: name2,
+      dataRef.ref().update({
         choice2: yourChoice,
-        uPic: uPic
+        uPic: uPic,
+        usertwo: name2
       });
       console.log("setup player 2: " + name2 + " 288");
       displayPlayer2 ();
@@ -342,6 +375,7 @@ function paper2() {
     shoot();
     imgChange();
 }
+
 function paper1() {
     opponentChoice = "paper";
     console.log(opponentChoice);
@@ -364,6 +398,7 @@ function scissors2() {
     shoot();
     imgChange();
 }
+
 function scissors1() {
     opponentChoice = "scissors";
     console.log(opponentChoice);
@@ -404,34 +439,47 @@ function shoot() {
         opPic = "assets/images/paper2.jpg";
         break;
     }
-    if (yourChoice === theirChoice) {
-        console.log("you: " + yourChoice + " them: " + theirChoice + " tied");
+    if (choice1 != "x" && choice2 != "x") {
+    if (choice1 === choice2) {
+        console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
         $("#status").html("It's a TIE");
         p1tieCount++;
         p2tieCount++;
         ctie++;
-    } else if (yourChoice === "rock" && theirChoice === "scissors") {
-        console.log("you: " + yourChoice + " them: " + theirChoice + " you won");
-        $("#status").html("You Won!!!!");
+
+    } else if (choice1 === "rock" && choice2 === "scissors") {
+        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+        $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
+        p1lossCount++;
         p2winCount++;
         closs++;
-    } else if (yourChoice === "paper" && theirChoice === "rock") {
-        console.log("you: " + yourChoice + " them: " + theirChoice + " you won");
-        $("#status").html("You Won!!!!");
-        p2winCount++;
+    } else if (choice1 === "paper" && choice2 === "rock") {
+        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+        $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
+        p2lossCount++
+        p1winCount++;
         closs++;
-    } else if (yourChoice === "scissors" && theirChoice === "paper") {
-        console.log("you: " + yourChoice + " them: " + theirChoice + " you won");
-        $("#status").html("You Won!!!!");
+    } else if (choice1 === "scissors" && choice2 === "paper") {
+        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+        $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
         p2winCount++;
         closs++;
     } else {
-        console.log("you: " + yourChoice + " them: " + theirChoice + " you lost");
-        $("#status").html("You Lost...");
-        p2lossCount++;
+        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
+        $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
+        p1lossCount++;
+        p2winCount++;
         cwin++;
     }
     updateStats();
+    dataRef.ref().update({
+        choice1: "x",
+        choice2: "x"
+      });
+  }
+  else {
+    $("#status").html("Waiting for Other Player....");
+  }
 }
 //-----------------------------------------------------------------
 
@@ -496,7 +544,15 @@ function setButtons() {
   $("#scissors1").on("click", function() {scissors1();});
   $("#reset").on("click", function () {resetGame();});
 }
+var name1Ref = dataRef.ref('userone');
+var name2Ref = dataRef.ref('usertwo');
+
 function setPlayers () {
+
+  name1Ref.on('value', function(snapshot) {
+      name1 = snapshot.val(); });
+  name2Ref.on('value', function(snapshot) {
+      name2 = snapshot.val(); });
   $("#p1").html(name1);
   $("#p2").html(name2);
 }
