@@ -40,6 +40,22 @@ var bothpick = false;
 var emailSent = false;
 var twoPlayers = false;
 var pclassArray = ["p2", "p1"];
+var runafter1change = true;
+
+var playerRef = dataRef.ref('twoPlayers');
+var player2Ref = dataRef.ref('player2');
+
+// check key data values before login
+        console.log("check firebase values after login");
+        playerRef.on('value', function(snapshot) {
+          resetGame();
+          console.log("checked twoPlayers value");
+        });
+        player2Ref.on('value', function(snapshot) {
+          if (snapshot.val()) {
+            n2 = snapshot.val();}
+          console.log("updating n2 from firebase: " + n2);
+        });
 //-----------------------------------------------------------------
 
 // allow signin with google
@@ -83,6 +99,15 @@ var pclassArray = ["p2", "p1"];
 // add sign out event
     btnLogout.addEventListener("click", e => {
       userAuth.signOut();
+      
+      if (n1) {
+        n1 = false;}
+      else { 
+        n2 = false;
+        dataRef.ref().update({
+          player2: n2});
+        console.log("updated player2 to firebase as false");
+      }
       mylogOut();
      });
 
@@ -115,12 +140,14 @@ var pclassArray = ["p2", "p1"];
 //-----------------------------------------------------------------    
 // when authorizied user state changes
   userAuth.onAuthStateChanged(firebaseUser => {
+    
       console.log(firebaseUser);
-
       // if logged in:
       if (firebaseUser){ 
+        console.log("n2: " + n2);
         firebaseUser.updateProfile({
         displayName: name});
+        
         // check to see if email is verified
         // temporarilyh disabled for testing
         /*if (!firebaseUser.emailVerified) {
@@ -130,6 +157,7 @@ var pclassArray = ["p2", "p1"];
         }
         else { mylogIn(); }*/
         mylogIn(); // need  to delete after reinstating email verification
+        runafter1change = false;
         // if email is sent check every second to see if verified
         if (emailSent){
           var mytimer = setInterval(function() {
@@ -150,6 +178,8 @@ var pclassArray = ["p2", "p1"];
       }
         
   });
+
+
 //-----------------------------------------------------------------
 // turn on game display and turn off setup but allow logout
 function mylogIn () {
@@ -157,8 +187,25 @@ function mylogIn () {
   $(".mygame").css("display", "inline");
   $(".setup").css("display", "none");
   yourChoice = "";
-  signupIn ();
+  
+  if (!n2) {
+    n2 = true;
+    name2 = $("#name").val().trim();
+    signupIn ();}
+
+  else if (!computer) {
+    n1 = true;
+    name1 = $("#name").val().trim();
+    signupIn();}
 }
+function clearFields () {
+  $("#name").html("");
+  $("#email").html("");
+  $("#password").html("");
+  console.log("clear input fields");
+}
+
+
 //-----------------------------------------------------------------
 // turn off game display and turn on signin, turn off logout
 function mylogOut () {
@@ -193,7 +240,7 @@ function verifyEmail () {
 
 //-----------------------------------------------------------------
 // set player names and set up database
-function signupIn () {
+/*function signupIn () {
   console.log("before if,then: " + name2 + " " + name1);
   if (players === 1) {
     console.log("during player 1 if,then: " + name2 + " " + name1);
@@ -210,36 +257,41 @@ function signupIn () {
   }
   else { alert("There are already 2 players playing! Please wait for one to finish.");}
 }
-
+*/
 
 //-----------------------------------------------------------------
-function setDatabaseUp () {
-    console.log("set up database");
+function signupIn () {
+    console.log("set up database in signin function");
+    clearFields();
     dataRef.ref().set({
         bothpick: bothpick,
-        twoPlayers: false
+        twoPlayers: false,
+        player2: n2,
+        player1: n1
       });
-    console.log("bothpick set");
-    if (n2) {
-      dataRef.ref().push({
-        user2: name2,
-        choice2: yourChoice,
-        uPic: uPic
-      });
-      console.log("setup player 2: " + name2);
-      displayPlayer2 ();
-    }
+    console.log("bothpick set in signup 268");
+    
     if (n1) {
       twoPlayers = true;
-      dataRef.ref().push({
+      dataRef.ref("user1").push({
         user1: name1,
         choice1: opponentChoice,
         opPic: opPic
       });
-      dataRef.ref().update({
+      dataRef.ref("user1").update({
         twoPlayers: twoPlayers});
-      console.log("setup player 1: " + name1);
+      console.log("setup player 1: " + name1 + " 279");
       displayPlayer1 ();
+      setPlayers;
+    }
+    else if (n2) {
+      dataRef.ref("user2").push({
+        user2: name2,
+        choice2: yourChoice,
+        uPic: uPic
+      });
+      console.log("setup player 2: " + name2 + " 288");
+      displayPlayer2 ();
     }
 
 }
@@ -408,14 +460,14 @@ function check() {
     $('input[type="checkbox"]').not(this).prop('checked', false);
     computer = $("#computercheck").prop('checked');
     p1 = $("#p1check").prop('checked');
-    console.log("Computer: " +computer + " Player 2: " + p1);
+    console.log("check function: Computer: " +computer + " Player 2: " + p1);
     if (computer) {
       name1 = "Computer";
     }
     else { name1 = "";}
     
   });
-    console.log("computer: " + computer + " Player 2: " + p1);
+    console.log("check function end: computer: " + computer + " Player 2: " + p1);
 }
 
 //-----------------------------------------------------------------
@@ -449,42 +501,19 @@ function setPlayers () {
   $("#p2").html(name2);
 }
 
-function playGame () {
-  $(".player").css("display", "inline");
-  $(".mygame").css("display", "inline");
-}
-function inputNames() {
-
-  $(".login").on("click", function () {
-    if (players === 2) {
-      name2 = $("#name").val().trim();}
-    else if (players === 1) {
-      name1 = $("#name").val().trim();}
-    check();
-    playGame();
-    if (!computer && !p1) {
-      alert("There is no one to play!");
-      $("#name").empty();
-      $("#email").empty();
-      $("#password").empty();
-      inputNames();
-      mylogOut();
-    }
-    else {
-      $(".setup").css("display", "none");
-      setPlayers();
-    }
-  });
-}
-
-$(document).ready( function runGame() {
+//function playGame () {
+//  $(".player").css("display", "inline");
+// $(".mygame").css("display", "inline");
+//}
+function runGame() {
+    
+  }
+$(document).ready( function startGame() {
     $('#p1check').prop('checked', true);
     check();
-    inputNames();
     resetGame();
     imgChange();
     createButtons();
     setButtons();
- 
 });
 
