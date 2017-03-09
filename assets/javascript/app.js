@@ -15,8 +15,9 @@
 // set initial variables
 var name1 = "Nobody";
 var name2 = "Me";   
-var yourChoice = "none";
-var opponentChoices = ["rock", "paper", "scissors"];
+var yourChoice = "";
+var computerChoices = ["rock", "paper", "scissors"];
+var opponentChoice = "";
 var theirChoice;
 var opPic = "";
 var uPic = "";
@@ -37,6 +38,8 @@ var n2 = false;
 var n1 = false;
 var bothpick = false;
 var emailSent = false;
+var twoPlayers = false;
+var pclassArray = ["p2", "p1"];
 //-----------------------------------------------------------------
 
 // allow signin with google
@@ -80,6 +83,7 @@ var emailSent = false;
 // add sign out event
     btnLogout.addEventListener("click", e => {
       userAuth.signOut();
+      mylogOut();
      });
 
     //add login event
@@ -118,12 +122,14 @@ var emailSent = false;
         firebaseUser.updateProfile({
         displayName: name});
         // check to see if email is verified
-        if (!firebaseUser.emailVerified) {
+        // temporarilyh disabled for testing
+        /*if (!firebaseUser.emailVerified) {
           verifyEmail();
           console.log("email Sent");
           emailSent = true;
         }
-        else { mylogIn(); }
+        else { mylogIn(); }*/
+        mylogIn(); // need  to delete after reinstating email verification
         // if email is sent check every second to see if verified
         if (emailSent){
           var mytimer = setInterval(function() {
@@ -140,11 +146,9 @@ var emailSent = false;
         else if (!firebaseUser){
           //set up to log user in
           mylogOut(); // turn off game and allow login
-          if (players < 2) {
-            players++;
           }
-        }
-      }   
+      }
+        
   });
 //-----------------------------------------------------------------
 // turn on game display and turn off setup but allow logout
@@ -161,6 +165,9 @@ function mylogOut () {
   $(".mygame").css("display", "none");
   $(".setup").css("display", "inline");
   $(".player").css("display", "none");
+  if (players < 2) {
+    players++;
+  }
 }
 //-----------------------------------------------------------------
 // stop interval timer
@@ -209,56 +216,110 @@ function signupIn () {
 function setDatabaseUp () {
     console.log("set up database");
     dataRef.ref().set({
-        bothpick: bothpick
+        bothpick: bothpick,
+        twoPlayers: false
       });
     console.log("bothpick set");
     if (n2) {
-      dataRef.ref().update({
+      dataRef.ref().push({
         user2: name2,
-        choice2: yourChoice
+        choice2: yourChoice,
+        uPic: uPic
       });
       console.log("setup player 2: " + name2);
+      displayPlayer2 ();
     }
     if (n1) {
+      twoPlayers = true;
       dataRef.ref().push({
         user1: name1,
-        choice1: opponentChoices
+        choice1: opponentChoice,
+        opPic: opPic
       });
+      dataRef.ref().update({
+        twoPlayers: twoPlayers});
       console.log("setup player 1: " + name1);
+      displayPlayer1 ();
     }
 
 }
 //-----------------------------------------------------------------
-    
+//  turn on player 2 buttons and turn off player 1 buttons
+function displayPlayer2 () {
+  $(".p2").css("display", "inline");
+  $(".p1").css("display", "none");
+}
+// turn on player 21 buttons and turn off player 2 buttons
+function displayPlayer1 () {
+  $(".p1").css("display", "inline");
+  $(".p2").css("display", "none");
+}
 //-----------------------------------------------------------------
 
 
-function rock() {
+function rock2() {
     yourChoice = "rock";
     console.log(yourChoice);
     dataRef.ref().update({
-        choice2: yourChoice
+        choice2: yourChoice,
+        uPic: "assets/images/rock2.jpg"
       });
     shoot();
-    uPic = "assets/images/rock2.jpg"
+    imgChange();
+}
+
+function rock1() {
+    opponentChoice = "rock";
+    console.log(opponentChoice);
+    dataRef.ref().update({
+        choice1: opponentChoice,
+        opPic: "assets/images/rock2.jpg"
+      });
+    shoot();
     imgChange();
 }
 //-----------------------------------------------------------------
 
-function paper() {
+function paper2() {
     yourChoice = "paper";
     console.log(yourChoice);
+    dataRef.ref().update({
+        choice2: yourChoice,
+        uPic: "assets/images/paper2.jpg"
+      });
     shoot();
-    uPic = "assets/images/paper2.jpg";
+    imgChange();
+}
+function paper1() {
+    opponentChoice = "paper";
+    console.log(opponentChoice);
+    dataRef.ref().update({
+        choice1: opponentChoice,
+        opPic: "assets/images/paper2.jpg"
+      });
+    shoot();
     imgChange();
 }
 //-----------------------------------------------------------------
 
-function scissors() {
+function scissors2() {
     yourChoice = "scissors";
     console.log(yourChoice);
+    dataRef.ref().update({
+        choice2: yourChoice,
+        uPic: "assets/images/scissors2.jpg"
+      });
     shoot();
-    uPic = "assets/images/scissors2.jpg";
+    imgChange();
+}
+function scissors1() {
+    opponentChoice = "scissors";
+    console.log(opponentChoice);
+    dataRef.ref().update({
+        choice1: opponentChoice,
+        opPic: "assets/images/scissors2.jpg"
+      });
+    shoot();
     imgChange();
 }
 //-----------------------------------------------------------------
@@ -271,7 +332,7 @@ function updateStats () {
 //-----------------------------------------------------------------
 
 function computerPick () {
-    theirChoice = opponentChoices[Math.floor(Math.random()*3)];
+    theirChoice = computerChoices[Math.floor(Math.random()*3)];
     console.log(theirChoice);
 }
 //-----------------------------------------------------------------
@@ -358,11 +419,29 @@ function check() {
 }
 
 //-----------------------------------------------------------------
+// create game buttons, one set for each player
+var bArray = ["rock2", "rock1", "paper2", "paper1", "scissors2", "scissors1"];
+var vArray = ["Rock", "Paper", "Scissors"];
+function createButtons () {
+    var k = 0;
+    var j = 0;
+    for (i=0;i < bArray.length;i++) {
+      if (i === 2 || i === 4) {j = 0;}
+      $(".gamebuttons").append('<button id="' + bArray[i] + '" class="btn-primary mysize-btn mygame ' + pclassArray[j] + '" value="' + computerChoices[k] + '">' + vArray[k] + '</button>');
+      j++;
+      if (i === 1 || i === 3) {k++;}
+    }
+}
+//-----------------------------------------------------------------
 
+// set up on click listeners once!
 function setButtons() {
-  $("#rock").on("click", function () {rock();});
-  $("#paper").on("click", function () {paper();});
-  $("#scissors").on("click", function() {scissors();});
+  $("#rock2").on("click", function () {rock2();});
+  $("#rock1").on("click", function () {rock1();});
+  $("#paper2").on("click", function () {paper2();});
+  $("#paper1").on("click", function () {paper1();});
+  $("#scissors2").on("click", function() {scissors2();});
+  $("#scissors1").on("click", function() {scissors1();});
   $("#reset").on("click", function () {resetGame();});
 }
 function setPlayers () {
@@ -404,6 +483,7 @@ $(document).ready( function runGame() {
     inputNames();
     resetGame();
     imgChange();
+    createButtons();
     setButtons();
  
 });
