@@ -36,6 +36,7 @@ var userNow = firebase.auth().currentUser;
 var n2 = false;
 var n1 = false;
 var bothpick = false;
+var emailSent = false;
 //-----------------------------------------------------------------
 
 // allow signin with google
@@ -71,7 +72,16 @@ var bothpick = false;
     const btnLogin = $("#login")[0];
     const btnSignUp = $("#signup")[0];
     const btnLogout = $("#logout")[0];
+
+  if (userAuth.user) {
+    mylogIn();
+  }
 //-----------------------------------------------------------------
+// add sign out event
+    btnLogout.addEventListener("click", e => {
+      userAuth.signOut();
+     });
+
     //add login event
     btnLogin.addEventListener("click", e=> {
       // get email name & password
@@ -82,9 +92,84 @@ var bothpick = false;
       const promise = userAuth.signInWithEmailAndPassword(email, pass);
       //signin
       promise.catch(e => console.log(e.message));
-      signupIn();
     });
 //-----------------------------------------------------------------
+    //add signup event
+    btnSignUp.addEventListener("click", e => {
+        //get email and password
+        // TODO: Check 4 real emails
+        emailSent = false;
+        const email = txtEmail.value;
+        const pass = txtPassword.value;
+        const name = txtName.value;
+        const auth = firebase.auth();
+        //const user = 
+        // Sign In
+        const promise = auth.createUserWithEmailAndPassword(email, pass);
+        promise.catch(e => console.log(e.message));
+    });
+//-----------------------------------------------------------------    
+// when authorizied user state changes
+  userAuth.onAuthStateChanged(firebaseUser => {
+      console.log(firebaseUser);
+
+      // if logged in:
+      if (firebaseUser){ 
+        firebaseUser.updateProfile({
+        displayName: name});
+        // check to see if email is verified
+        if (!firebaseUser.emailVerified) {
+          verifyEmail();
+          console.log("email Sent");
+          emailSent = true;
+        }
+        else { mylogIn(); }
+        // if email is sent check every second to see if verified
+        if (emailSent){
+          var mytimer = setInterval(function() {
+            firebase.auth().currentUser.reload();
+            if (firebase.auth().currentUser.emailVerified) {
+              console.log("Email Verified!");
+              mylogIn();
+              myStopFunction(mytimer);
+            }
+          }, 1000);
+        }
+       // end login tasks
+        //if logged out
+        else if (!firebaseUser){
+          //set up to log user in
+          mylogOut(); // turn off game and allow login
+          if (players < 2) {
+            players++;
+          }
+        }
+      }   
+  });
+//-----------------------------------------------------------------
+// turn on game display and turn off setup but allow logout
+function mylogIn () {
+  $(".mynav").css("display", "inline");
+  $(".mygame").css("display", "inline");
+  $(".setup").css("display", "none");
+  yourChoice = "";
+  signupIn ();
+}
+//-----------------------------------------------------------------
+// turn off game display and turn on signin, turn off logout
+function mylogOut () {
+  $(".mygame").css("display", "none");
+  $(".setup").css("display", "inline");
+  $(".player").css("display", "none");
+}
+//-----------------------------------------------------------------
+// stop interval timer
+function myStopFunction() {
+    clearInterval(mytimer);
+    break;
+}
+//-----------------------------------------------------------------
+// send verification email
 function verifyEmail () {
   //checkemail = userNow.emailVerified;
   //if (checkemail === null) 
@@ -94,69 +179,32 @@ function verifyEmail () {
 
           // Email sent.
           }, function(error) {
-          alert(error);
+          alert(error); // still need to deal with errors
       });
 }
-  
 
 
-
-    //add signup event
-    btnSignUp.addEventListener("click", e => {
-      //get email and password
-      // TODO: Check 4 real emails
-
-      const email = txtEmail.value;
-      const pass = txtPassword.value;
-      const name = txtName.value;
-      const auth = firebase.auth();
-      //const user = 
-      // Sign In
-      const promise = auth.createUserWithEmailAndPassword(email, pass);
-      promise.catch(e => console.log(e.message));
-      verifyEmail();
-      console.log(firebaseUser);
-      signupIn ();
-    });
 //-----------------------------------------------------------------
-    // add sign out event
-    btnLogout.addEventListener("click", e => {
-      userAuth.onAuthStateChanged(firebaseUser => {
-        console.log(firebaseUser);
-        userAuth.signOut();
-        $(".mynav").css("display", "inline");
-        $("#logout").css("display", "none");
-        if (players < 2) {
-          players++;
-        }
-        userLogin ();
-        });
-     });
-//-----------------------------------------------------------------
-
+// set player names and set up database
 function signupIn () {
-  console.log(name2 + " " + name1);
-  if (players === 2) {
-    name2 = name;
+  console.log("before if,then: " + name2 + " " + name1);
+  if (players === 1) {
+    console.log("during player 1 if,then: " + name2 + " " + name1);
+    players = 0;
+    n1 = true;
+    setDatabaseUp();
+  }
+  else if (players === 2) {
+    console.log("during player 2 if,then: " + name2 + " " + name1);
     players--;
     n2 = true;
     console.log("run set up database");
     setDatabaseUp();
   }
-  else if (players === 1) {
-    name1 = name;
-    players = 0;
-    n1 = true;
-    setDatabaseUp();
-  }
   else { alert("There are already 2 players playing! Please wait for one to finish.");}
 }
-//-----------------------------------------------------------------
 
-function userLogin () {
-  $(".signin").css("display", "inline");
 
-}
 //-----------------------------------------------------------------
 function setDatabaseUp () {
     console.log("set up database");
@@ -165,7 +213,7 @@ function setDatabaseUp () {
       });
     console.log("bothpick set");
     if (n2) {
-      dataRef.update().push({
+      dataRef.ref().update({
         user2: name2,
         choice2: yourChoice
       });
@@ -181,18 +229,7 @@ function setDatabaseUp () {
 
 }
 //-----------------------------------------------------------------
-    // Add a realtime listener
-    userAuth.onAuthStateChanged(firebaseUser => {
-      if (firebaseUser) {
-        console.log(firebaseUser);
-        $("#logout").css("display", "inline");
-      }
-        else {
-          console.log("Not Logged in");
-          userLogin();
-        }
-      
-    });
+    
 //-----------------------------------------------------------------
 
 
@@ -332,21 +369,27 @@ function setPlayers () {
   $("#p1").html(name1);
   $("#p2").html(name2);
 }
+
+function playGame () {
+  $(".player").css("display", "inline");
+  $(".mygame").css("display", "inline");
+}
 function inputNames() {
 
   $(".login").on("click", function () {
-    name2 = $("#name").val().trim();
+    if (players === 2) {
+      name2 = $("#name").val().trim();}
+    else if (players === 1) {
+      name1 = $("#name").val().trim();}
     check();
-    $(".player").css("display", "inline");
-    $(".mygame").css("display", "inline");
+    playGame();
     if (!computer && !p1) {
       alert("There is no one to play!");
       $("#name").empty();
       $("#email").empty();
       $("#password").empty();
-      $(".player").css("display", "none");
-      $(".mygame").css("display", "none");
       inputNames();
+      mylogOut();
     }
     else {
       $(".setup").css("display", "none");
