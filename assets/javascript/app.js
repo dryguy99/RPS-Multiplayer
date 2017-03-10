@@ -13,8 +13,8 @@
   var userAuth = firebase.auth();
 //-----------------------------------------------------------------
 // set initial variables
-var name1 = "Nobody";
-var name2 = "Me";   
+var name1 = "";
+var name2 = "";   
 var yourChoice = "";
 var computerChoices = ["rock", "paper", "scissors"];
 var opponentChoice = "";
@@ -48,48 +48,52 @@ var player2Ref = dataRef.ref('player2');
 var playerRef = dataRef.ref('player1');
 var choice1Ref = dataRef.ref('choice1');
 var choice2Ref = dataRef.ref('choice2');
-var user1Ref = dataRef.ref('userone');
-var user2Ref = dataRef.ref('usertwo');
+var user1Ref = dataRef.ref('name/userone');
+var user2Ref = dataRef.ref('name/usertwo');
 
-// check key data values before login
+// check key firebase data values before login
+ console.log("check firebase values before login");
+    // is there a player one?
+    playerRef.on('value', function(snapshot) {
+      if (snapshot.val()) {
+        n1 = snapshot.val();}
+      console.log("updating n1 from firebase: " + n1);
+    });
+    // is there a player two?
+    player2Ref.on('value', function(snapshot) {
+      if (snapshot.val()) {
+        n2 = snapshot.val();}
+      console.log("updating n2 from firebase: " + n2);
+    });
+    //update player one name.
     user1Ref.on('value', function(snapshot) {
       if (n1) {
         name1 = snapshot.val();}
       console.log("updating user1 from firebase to: " + name1);
     });
-
+    // update player 2 name.
     user2Ref.on('value', function(snapshot) {
       if (n2) {
         name2 = snapshot.val();}
       console.log("updating user2 from firebase to: " + name2);
     });
     
-
+    //update player 1 choice for game.
     choice1Ref.on('value', function(snapshot) {
       choice1 = snapshot.val();
       if (n1 && n2) {
           shoot();}
     });
-
+    //update player 2 choice for game.
     choice2Ref.on('value', function(snapshot) {
       choice2 = snapshot.val();
       if (n1 && n2) {
           shoot();}
     });
 
-    console.log("check firebase values before login");
+   
 
-    playerRef.on('value', function(snapshot) {
-      if (snapshot.val()) {
-        n1 = snapshot.val();}
-      console.log("updating n1 from firebase: " + n1);
-    });
-
-    player2Ref.on('value', function(snapshot) {
-      if (snapshot.val()) {
-        n2 = snapshot.val();}
-      console.log("updating n2 from firebase: " + n2);
-    });
+    
 
 //-----------------------------------------------------------------
 
@@ -133,7 +137,7 @@ var user2Ref = dataRef.ref('usertwo');
 //-----------------------------------------------------------------
 // add sign out event
     btnLogout.addEventListener("click", e => {
-      userAuth.signOut();
+      
       
       if (n1) {
         n1 = false;
@@ -141,13 +145,13 @@ var user2Ref = dataRef.ref('usertwo');
           player1: n1});
         console.log("updated player1 to firebase as false");
       }
-        
       else { 
         n2 = false;
         dataRef.ref().update({
           player2: n2});
         console.log("updated player2 to firebase as false");
       }
+      userAuth.signOut();
       mylogOut();
      });
 //-----------------------------------------------------------------
@@ -307,21 +311,23 @@ function signupIn () {
     console.log("set up database in signin function");
     clearFields();
     dataRef.ref().set({
-        userone: "me",
-        usertwo: "you",
         player2: n2,
         player1: n1
       });
     
     
     if (n1) {
-      
       dataRef.ref().update({
-        userone: name1,
         choice1: opponentChoice,
-        opPic: opPic,
-       
+        opPic: opPic
       });
+      var user = {
+        userone: name1
+      }
+      var updates = {};
+      updates['/name/' + newPostKey] = user;
+      dataRef.ref().update(updates);
+
       console.log("setup player 1: " + name1 + " 279");
       displayPlayer1 ();
       setPlayers();
@@ -329,9 +335,15 @@ function signupIn () {
     else if (n2) {
       dataRef.ref().update({
         choice2: yourChoice,
-        uPic: uPic,
-        usertwo: name2
+        uPic: uPic
       });
+      var user = {
+        usertwo: name2
+      }
+      var newPostKey = dataRef.ref().child('name').push().key;
+      var updates = {};
+      updates['/name/' + newPostKey] = user;
+      dataRef.ref().update(updates);
       console.log("setup player 2: " + name2 + " 288");
       displayPlayer2 ();
     }
@@ -556,15 +568,15 @@ function setButtons() {
   $("#scissors1").on("click", function() {scissors1();});
   $("#reset").on("click", function () {resetGame();});
 }
-var name1Ref = dataRef.ref('userone');
-var name2Ref = dataRef.ref('usertwo');
+//var name1Ref = dataRef.ref('name/userone');
+//var name2Ref = dataRef.ref('name/usertwo');
 
 function setPlayers () {
 
-  name1Ref.on('value', function(snapshot) {
+  /*name1Ref.on('value', function(snapshot) {
       name1 = snapshot.val(); });
   name2Ref.on('value', function(snapshot) {
-      name2 = snapshot.val(); });
+      name2 = snapshot.val(); });*/
   $("#p1").html(name1);
   $("#p2").html(name2);
 }
