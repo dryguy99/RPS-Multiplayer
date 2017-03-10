@@ -36,50 +36,53 @@ var players = 2;
 var userNow = firebase.auth().currentUser;
 var n2 = false;
 var n1 = false;
-var bothpick = false;
+
 var emailSent = false;
-var twoPlayers = false;
 var pclassArray = ["p2", "p1"];
 var runafter1change = true;
 var choice1 = "x";
 var choice2 = "x";
 
-var playerRef = dataRef.ref('twoPlayers');
+
 var player2Ref = dataRef.ref('player2');
-var bothpicRef = dataRef.ref('bothpick');
+var playerRef = dataRef.ref('player1');
 var choice1Ref = dataRef.ref('choice1');
 var choice2Ref = dataRef.ref('choice2');
-var twoPlayersRef = dataRef.ref('twoPlayers');
+var user1Ref = dataRef.ref('userone');
+var user2Ref = dataRef.ref('usertwo');
+
 // check key data values before login
-    bothpicRef.on('value', function(snapshot) {
-      bothpick = snapshot.val();
-      if (bothpick) {
-        shoot();
-        bothpick = false;
-      }
+    user1Ref.on('value', function(snapshot) {
+      if (n1) {
+        name1 = snapshot.val();}
+      console.log("updating user1 from firebase to: " + name1);
     });
 
-    twoPlayersRef.on('value', function(snapshot) {
-      twoPlayers = snapshot.val();
+    user2Ref.on('value', function(snapshot) {
+      if (n2) {
+        name2 = snapshot.val();}
+      console.log("updating user2 from firebase to: " + name2);
     });
+    
 
     choice1Ref.on('value', function(snapshot) {
       choice1 = snapshot.val();
-      if (twoPlayers) {
+      if (n1 && n2) {
           shoot();}
     });
 
     choice2Ref.on('value', function(snapshot) {
       choice2 = snapshot.val();
-      if (twoPlayers) {
+      if (n1 && n2) {
           shoot();}
     });
 
     console.log("check firebase values before login");
 
     playerRef.on('value', function(snapshot) {
-      resetGame();
-      console.log("checked twoPlayers value");
+      if (snapshot.val()) {
+        n1 = snapshot.val();}
+      console.log("updating n1 from firebase: " + n1);
     });
 
     player2Ref.on('value', function(snapshot) {
@@ -133,7 +136,12 @@ var twoPlayersRef = dataRef.ref('twoPlayers');
       userAuth.signOut();
       
       if (n1) {
-        n1 = false;}
+        n1 = false;
+        dataRef.ref().update({
+          player1: n1});
+        console.log("updated player1 to firebase as false");
+      }
+        
       else { 
         n2 = false;
         dataRef.ref().update({
@@ -142,7 +150,7 @@ var twoPlayersRef = dataRef.ref('twoPlayers');
       }
       mylogOut();
      });
-
+//-----------------------------------------------------------------
     //add login event
     btnLogin.addEventListener("click", e=> {
       // get email name & password
@@ -176,9 +184,10 @@ var twoPlayersRef = dataRef.ref('twoPlayers');
       console.log(firebaseUser);
       // if logged in:
       if (firebaseUser){ 
-        console.log("n2: " + n2);
+        console.log("n2: " + n2 + " n1: " + n1);
         firebaseUser.updateProfile({
         displayName: name});
+
         
         // check to see if email is verified
         // temporarilyh disabled for testing
@@ -298,20 +307,20 @@ function signupIn () {
     console.log("set up database in signin function");
     clearFields();
     dataRef.ref().set({
-        bothpick: bothpick,
-        twoPlayers: false,
+        userone: "me",
+        usertwo: "you",
         player2: n2,
         player1: n1
       });
-    console.log("bothpick set in signup 268");
+    
     
     if (n1) {
-      twoPlayers = true;
+      
       dataRef.ref().update({
         userone: name1,
         choice1: opponentChoice,
         opPic: opPic,
-        twoPlayers: twoPlayers
+       
       });
       console.log("setup player 1: " + name1 + " 279");
       displayPlayer1 ();
@@ -412,9 +421,12 @@ function scissors1() {
 //-----------------------------------------------------------------
 
 function updateStats () {
-    $("#win").html("Wins: " + p2winCount);
-    $("#win").append(" - Losses: " + p2lossCount);
-    $("#win").append(" - Ties: " + p2tieCount);
+    $("#player1").html("Wins: " + p1winCount);
+    $("#player1").append(" - Losses: " + p1lossCount);
+    $("#player1").append(" - Ties: " + p1tieCount);
+    $("#player2").html("Wins: " + p2winCount);
+    $("#player2").append(" - Losses: " + p2lossCount);
+    $("#player2").append(" - Ties: " + p2tieCount);
 }
 //-----------------------------------------------------------------
 
