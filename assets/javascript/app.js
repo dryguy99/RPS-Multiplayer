@@ -147,7 +147,7 @@ var pic2Ref = dataRef.ref('uPic');
     const btnLogout = $("#logout")[0];
 //-----------------------------------------------------------------
 // if already logged in on refresh logout
-  if ((typeof userAuth.currentUser.uid) === "string") {
+  if (userAuth.currentUser) {
     userAuth.signOut();
     mylogOut();
   }
@@ -469,46 +469,47 @@ function shoot() {
         break;
     }
     if (choice1 != "x" && choice2 != "x") {
-    if (choice1 === choice2) {
-        console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
-        $("#status").html("It's a TIE");
-        p1tieCount++;
-        p2tieCount++;
-        ctie++;
+      $("#status").html("BAM!");
+      if (choice1 === choice2) {
+          console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
+          $("#status").html("It's a TIE");
+          p1tieCount++;
+          p2tieCount++;
+          ctie++;
 
-    } else if (choice1 === "rock" && choice2 === "scissors") {
-        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
-        $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
-        p1lossCount++;
-        p2winCount++;
-        closs++;
-    } else if (choice1 === "paper" && choice2 === "rock") {
-        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
-        $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
-        p2lossCount++
-        p1winCount++;
-        closs++;
-    } else if (choice1 === "scissors" && choice2 === "paper") {
-        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
-        $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
-        p2winCount++;
-        closs++;
-    } else {
-        console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
-        $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
-        p1lossCount++;
-        p2winCount++;
-        cwin++;
+      } else if (choice1 === "rock" && choice2 === "scissors") {
+          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+          $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
+          p1lossCount++;
+          p2winCount++;
+          closs++;
+      } else if (choice1 === "paper" && choice2 === "rock") {
+          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+          $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
+          p2lossCount++
+          p1winCount++;
+          closs++;
+      } else if (choice1 === "scissors" && choice2 === "paper") {
+          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+          $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
+          p2winCount++;
+          closs++;
+      } else {
+          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
+          $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
+          p1lossCount++;
+          p2winCount++;
+          cwin++;
+      }
+      updateStats();
+      dataRef.ref().update({
+          choice1: "x",
+          choice2: "x"
+        });
+      }
+    else {
+      $("#status").html("Waiting for Other Player....");
     }
-    updateStats();
-    dataRef.ref().update({
-        choice1: "x",
-        choice2: "x"
-      });
-  }
-  else {
-    $("#status").html("Waiting for Other Player....");
-  }
 }
 //-----------------------------------------------------------------
 
