@@ -13,8 +13,8 @@
   var userAuth = firebase.auth();
 //-----------------------------------------------------------------
 // set initial variables
-var name1 = "";
-var name2 = "";   
+var name1;
+var name2;   
 var yourChoice = "";
 var computerChoices = ["rock", "paper", "scissors"];
 var opponentChoice = "";
@@ -36,22 +36,24 @@ var players = 2;
 var userNow = firebase.auth().currentUser;
 var n2 = false;
 var n1 = false;
-
 var emailSent = false;
 var pclassArray = ["p2", "p1"];
 var runafter1change = true;
 var choice1 = "x";
 var choice2 = "x";
-
-
+//---------------------------------------------------------------
+// set listner values
 var player2Ref = dataRef.ref('player2');
 var playerRef = dataRef.ref('player1');
 var choice1Ref = dataRef.ref('choice1');
 var choice2Ref = dataRef.ref('choice2');
-var user1Ref = dataRef.ref('name/userone');
-var user2Ref = dataRef.ref('name/usertwo');
-
+var user1Ref = dataRef.ref('userone');
+var user2Ref = dataRef.ref('usertwo');
+var pic1Ref = dataRef.ref('opPic');
+var pic2Ref = dataRef.ref('uPic');
+//---------------------------------------------------------------
 // check key firebase data values before login
+
  console.log("check firebase values before login");
     // is there a player one?
     playerRef.on('value', function(snapshot) {
@@ -65,39 +67,52 @@ var user2Ref = dataRef.ref('name/usertwo');
         n2 = snapshot.val();}
       console.log("updating n2 from firebase: " + n2);
     });
+//---------------------------------------------------------------
     //update player one name.
     user1Ref.on('value', function(snapshot) {
-      if (n1) {
-        name1 = snapshot.val();}
+      console.log(snapshot.val());
+        name1 = snapshot.val();
+        $("#p1").html(name1);
       console.log("updating user1 from firebase to: " + name1);
     });
     // update player 2 name.
     user2Ref.on('value', function(snapshot) {
-      if (n2) {
-        name2 = snapshot.val();}
+        name2 = snapshot.val();
+        $("#p2").html(name2);
       console.log("updating user2 from firebase to: " + name2);
     });
-    
+//---------------------------------------------------------------   
     //update player 1 choice for game.
     choice1Ref.on('value', function(snapshot) {
       choice1 = snapshot.val();
-      if (n1 && n2) {
+      if (choice1 != "x" && choice2 != "x") {
           shoot();}
     });
     //update player 2 choice for game.
     choice2Ref.on('value', function(snapshot) {
       choice2 = snapshot.val();
-      if (n1 && n2) {
+      if (choice1 != "x" && choice2 != "x") {
           shoot();}
     });
-
+//---------------------------------------------------------------   
+    //update player 1 picture
+    pic1Ref.on('value', function(snapshot) {
+      console.log(snapshot.val());
+        opPic = snapshot.val();
+        imgChange();
+    });
+    // update player 2 picture.
+    pic2Ref.on('value', function(snapshot) {
+        uPic = snapshot.val();
+        imgChange();
+    });
    
 
     
 
 //-----------------------------------------------------------------
 
-// allow signin with google
+// allow signin with google - doesn't work & need fixing
       //var provider = new firebase.auth.GoogleAuthProvider();
       //userAuth.signInWithRedirect(provider);
 //-----------------------------------------------------------------
@@ -130,9 +145,11 @@ var user2Ref = dataRef.ref('name/usertwo');
     const btnLogin = $("#login")[0];
     const btnSignUp = $("#signup")[0];
     const btnLogout = $("#logout")[0];
-
-  if (userAuth.user) {
-    mylogIn();
+//-----------------------------------------------------------------
+// if already logged in on refresh logout
+  if ((typeof userAuth.currentUser.uid) === "string") {
+    userAuth.signOut();
+    mylogOut();
   }
 //-----------------------------------------------------------------
 // add sign out event
@@ -228,9 +245,11 @@ var user2Ref = dataRef.ref('name/usertwo');
 //-----------------------------------------------------------------
 // turn on game display and turn off setup but allow logout
 function mylogIn () {
+  setPlayers();
   $(".mynav").css("display", "inline");
   $(".mygame").css("display", "inline");
   $(".setup").css("display", "none");
+  $(".player").css("display", "inline");
   yourChoice = "";
   
   if (!n2) {
@@ -310,40 +329,26 @@ function verifyEmail () {
 function signupIn () {
     console.log("set up database in signin function");
     clearFields();
-    dataRef.ref().set({
-        player2: n2,
-        player1: n1
-      });
-    
-    
+    setPlayers();
     if (n1) {
       dataRef.ref().update({
-        choice1: opponentChoice,
-        opPic: opPic
-      });
-      var user = {
         userone: name1
-      }
-      var updates = {};
-      updates['/name/' + newPostKey] = user;
-      dataRef.ref().update(updates);
-
+      });
       console.log("setup player 1: " + name1 + " 279");
       displayPlayer1 ();
-      setPlayers();
+      //setPlayers();
     }
     else if (n2) {
-      dataRef.ref().update({
+      dataRef.ref().set({
+        player2: n2,
+        player1: n1,
         choice2: yourChoice,
-        uPic: uPic
+        choice1: opponentChoice,
+        uPic: uPic,
+        opPic: opPic,
+        usertwo: name2,
+        userone: name1
       });
-      var user = {
-        usertwo: name2
-      }
-      var newPostKey = dataRef.ref().child('name').push().key;
-      var updates = {};
-      updates['/name/' + newPostKey] = user;
-      dataRef.ref().update(updates);
       console.log("setup player 2: " + name2 + " 288");
       displayPlayer2 ();
     }
@@ -535,8 +540,10 @@ function check() {
     console.log("check function: Computer: " +computer + " Player 2: " + p1);
     if (computer) {
       name1 = "Computer";
+      dataRef.ref().update({
+        userone: name1
+      });
     }
-    else { name1 = "";}
     
   });
     console.log("check function end: computer: " + computer + " Player 2: " + p1);
@@ -572,11 +579,7 @@ function setButtons() {
 //var name2Ref = dataRef.ref('name/usertwo');
 
 function setPlayers () {
-
-  /*name1Ref.on('value', function(snapshot) {
-      name1 = snapshot.val(); });
-  name2Ref.on('value', function(snapshot) {
-      name2 = snapshot.val(); });*/
+  console.log("display players names p1: "+name1+ " p2: "+name2);
   $("#p1").html(name1);
   $("#p2").html(name2);
 }
