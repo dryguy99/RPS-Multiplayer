@@ -66,3 +66,9 @@ nav {
 	margin: 5px 0px 0px 0px auto;
 	justify-content: center;
 }
+#logout1 {
+	display: none;
+}
+#logout2 {
+	display: none;
+}

@@ -13,8 +13,8 @@
   var userAuth = firebase.auth();
 //-----------------------------------------------------------------
 // set initial variables
-var name1;
-var name2;   
+var name1 = "nobody";
+var name2 = "nobody";   
 var yourChoice = "";
 var computerChoices = ["rock", "paper", "scissors"];
 var opponentChoice = "";
@@ -41,6 +41,7 @@ var pclassArray = ["p2", "p1"];
 var runafter1change = true;
 var choice1 = "x";
 var choice2 = "x";
+var startimg = "assets/images/rock1.jpg";
 //---------------------------------------------------------------
 // set listner values
 var player2Ref = dataRef.ref('player2');
@@ -83,7 +84,7 @@ var pic2Ref = dataRef.ref('uPic');
     });
 //---------------------------------------------------------------   
     //update player 1 choice for game.
-    choice1Ref.on('value', function(snapshot) {
+   choice1Ref.on('value', function(snapshot) {
       choice1 = snapshot.val();
       if (choice1 != "x" && choice2 != "x") {
           shoot();}
@@ -144,7 +145,8 @@ var pic2Ref = dataRef.ref('uPic');
     const txtPassword = $("#password")[0];
     const btnLogin = $("#login")[0];
     const btnSignUp = $("#signup")[0];
-    const btnLogout = $("#logout")[0];
+    const btn1Logout = $("#logout1")[0];
+    const btn2Logout = $("#logout2")[0];
 //-----------------------------------------------------------------
 // if already logged in on refresh logout
   if (userAuth.currentUser) {
@@ -153,17 +155,25 @@ var pic2Ref = dataRef.ref('uPic');
   }
 //-----------------------------------------------------------------
 // add sign out event
-    btnLogout.addEventListener("click", e => {
-      
+// player 1 logout
+    btn1Logout.addEventListener("click", e => {
       
       if (n1) {
         n1 = false;
+        $("#logout1").css("display", "none");
         dataRef.ref().update({
           player1: n1});
         console.log("updated player1 to firebase as false");
       }
-      else { 
+      userAuth.signOut();
+      mylogOut();
+     });
+// player 2 logout
+    btn2Logout.addEventListener("click", e => {
+      
+      if (n2) { 
         n2 = false;
+        $("#logout2").css("display", "none");
         dataRef.ref().update({
           player2: n2});
         console.log("updated player2 to firebase as false");
@@ -255,13 +265,34 @@ function mylogIn () {
   if (!n2) {
     n2 = true;
     name2 = $("#name").val().trim();
+    $("#logout2").css("display", "inline");
+    $("#logout1").css("display", "none");
+    dataRef.ref().set({
+        player2: n2,
+        player1: n1,
+        choice2: choice2,
+        choice1: choice1,
+        uPic: startimg,
+        opPic: startimg,
+        usertwo: name2,
+        userone: name1
+      });
+    displayPlayer2 ();
     signupIn ();}
 
-  else if (!computer) {
+  else if (!n1) {
     n1 = true;
     name1 = $("#name").val().trim();
+    $("#logout2").css("display", "none");
+    $("#logout1").css("display", "inline");
+    displayPlayer1 ();
     signupIn();}
+  else {
+    $("#status").html("There are already 2 people playing. Please wait or choose to play the computer.");
+  }
 }
+
+
 //-----------------------------------------------------------------
 
 function clearFields () {
@@ -302,57 +333,26 @@ function verifyEmail () {
           alert(error); // still need to deal with errors
       });
 }
-
-
 //-----------------------------------------------------------------
-// set player names and set up database
-/*function signupIn () {
-  console.log("before if,then: " + name2 + " " + name1);
-  if (players === 1) {
-    console.log("during player 1 if,then: " + name2 + " " + name1);
-    players = 0;
-    n1 = true;
-    setDatabaseUp();
-  }
-  else if (players === 2) {
-    console.log("during player 2 if,then: " + name2 + " " + name1);
-    players--;
-    n2 = true;
-    console.log("run set up database");
-    setDatabaseUp();
-  }
-  else { alert("There are already 2 players playing! Please wait for one to finish.");}
-}
-*/
-
-//-----------------------------------------------------------------
+// set firebase data and user names for gameplay
 function signupIn () {
     console.log("set up database in signin function");
     clearFields();
     setPlayers();
+
     if (n1) {
       dataRef.ref().update({
         userone: name1
       });
-      console.log("setup player 1: " + name1 + " 279");
-      displayPlayer1 ();
-      //setPlayers();
-    }
-    else if (n2) {
-      dataRef.ref().set({
-        player2: n2,
-        player1: n1,
-        choice2: yourChoice,
-        choice1: opponentChoice,
-        uPic: uPic,
-        opPic: opPic,
-        usertwo: name2,
-        userone: name1
-      });
-      console.log("setup player 2: " + name2 + " 288");
-      displayPlayer2 ();
+      console.log("setup player 1: " + name1);
     }
 
+    if (n2) {
+      dataRef.ref().update({
+        usertwo: name2
+      });
+      console.log("setup player 2: " + name2);
+    }
 }
 //-----------------------------------------------------------------
 //  turn on player 2 buttons and turn off player 1 buttons
@@ -369,10 +369,10 @@ function displayPlayer1 () {
 
 
 function rock2() {
-    yourChoice = "rock";
-    console.log(yourChoice);
+    choice2 = "rock";
+    console.log(choice2);
     dataRef.ref().update({
-        choice2: yourChoice,
+        choice2: choice2,
         uPic: "assets/images/rock2.jpg"
       });
     shoot();
@@ -380,10 +380,10 @@ function rock2() {
 }
 
 function rock1() {
-    opponentChoice = "rock";
-    console.log(opponentChoice);
+    choice1 = "rock";
+    console.log(choice1);
     dataRef.ref().update({
-        choice1: opponentChoice,
+        choice1: choice1,
         opPic: "assets/images/rock2.jpg"
       });
     shoot();
@@ -392,10 +392,10 @@ function rock1() {
 //-----------------------------------------------------------------
 
 function paper2() {
-    yourChoice = "paper";
-    console.log(yourChoice);
+    choice2 = "paper";
+    console.log(choice2);
     dataRef.ref().update({
-        choice2: yourChoice,
+        choice2: choice2,
         uPic: "assets/images/paper2.jpg"
       });
     shoot();
@@ -403,10 +403,10 @@ function paper2() {
 }
 
 function paper1() {
-    opponentChoice = "paper";
-    console.log(opponentChoice);
+    choice1 = "paper";
+    console.log(choice1);
     dataRef.ref().update({
-        choice1: opponentChoice,
+        choice1: choice1,
         opPic: "assets/images/paper2.jpg"
       });
     shoot();
@@ -415,10 +415,10 @@ function paper1() {
 //-----------------------------------------------------------------
 
 function scissors2() {
-    yourChoice = "scissors";
-    console.log(yourChoice);
+    choice2 = "scissors";
+    console.log(choice2);
     dataRef.ref().update({
-        choice2: yourChoice,
+        choice2: choice2,
         uPic: "assets/images/scissors2.jpg"
       });
     shoot();
@@ -426,10 +426,10 @@ function scissors2() {
 }
 
 function scissors1() {
-    opponentChoice = "scissors";
-    console.log(opponentChoice);
+    choice1 = "scissors";
+    console.log(choice1);
     dataRef.ref().update({
-        choice1: opponentChoice,
+        choice1: choice1,
         opPic: "assets/images/scissors2.jpg"
       });
     shoot();
@@ -468,7 +468,7 @@ function shoot() {
         opPic = "assets/images/paper2.jpg";
         break;
     }
-    if (choice1 != "x" && choice2 != "x") {
+    if ((choice1 != "x") && (choice2 != "x")) {
       $("#status").html("BAM!");
       if (choice1 === choice2) {
           console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
@@ -539,13 +539,18 @@ function check() {
     computer = $("#computercheck").prop('checked');
     p1 = $("#p1check").prop('checked');
     console.log("check function: Computer: " +computer + " Player 2: " + p1);
-    if (computer) {
+    if (computer && !n1) {
       name1 = "Computer";
       dataRef.ref().update({
         userone: name1
       });
     }
-    
+    else if (computer && !n2) {
+      name2 = "Computer";
+      dataRef.ref().update({
+        usertwo: name2
+      });
+    }
   });
     console.log("check function end: computer: " + computer + " Player 2: " + p1);
 }
@@ -575,6 +580,8 @@ function setButtons() {
   $("#scissors2").on("click", function() {scissors2();});
   $("#scissors1").on("click", function() {scissors1();});
   $("#reset").on("click", function () {resetGame();});
+  $("#")
+
 }
 //var name1Ref = dataRef.ref('name/userone');
 //var name2Ref = dataRef.ref('name/usertwo');
