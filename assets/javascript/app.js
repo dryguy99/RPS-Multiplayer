@@ -370,10 +370,10 @@ function displayPlayer1 () {
 
 function rock2() {
     choice2 = "rock";
+    uPic = "assets/images/rock2.jpg";
     console.log(choice2);
     dataRef.ref().update({
-        choice2: choice2,
-        uPic: "assets/images/rock2.jpg"
+        choice2: choice2
       });
     shoot();
     imgChange();
@@ -381,10 +381,10 @@ function rock2() {
 
 function rock1() {
     choice1 = "rock";
+    opPic = "assets/images/rock2.jpg";
     console.log(choice1);
     dataRef.ref().update({
-        choice1: choice1,
-        opPic: "assets/images/rock2.jpg"
+        choice1: choice1
       });
     shoot();
     imgChange();
@@ -393,10 +393,10 @@ function rock1() {
 
 function paper2() {
     choice2 = "paper";
+    uPic = "assets/images/paper2.jpg";
     console.log(choice2);
     dataRef.ref().update({
-        choice2: choice2,
-        uPic: "assets/images/paper2.jpg"
+        choice2: choice2 
       });
     shoot();
     imgChange();
@@ -404,10 +404,10 @@ function paper2() {
 
 function paper1() {
     choice1 = "paper";
+    opPic = "assets/images/paper2.jpg";
     console.log(choice1);
     dataRef.ref().update({
-        choice1: choice1,
-        opPic: "assets/images/paper2.jpg"
+        choice1: choice1
       });
     shoot();
     imgChange();
@@ -416,10 +416,10 @@ function paper1() {
 
 function scissors2() {
     choice2 = "scissors";
+    uPic = "assets/images/scissors2.jpg";
     console.log(choice2);
     dataRef.ref().update({
-        choice2: choice2,
-        uPic: "assets/images/scissors2.jpg"
+        choice2: choice2
       });
     shoot();
     imgChange();
@@ -427,10 +427,10 @@ function scissors2() {
 
 function scissors1() {
     choice1 = "scissors";
+    opPic = "assets/images/scissors2.jpg";
     console.log(choice1);
     dataRef.ref().update({
-        choice1: choice1,
-        opPic: "assets/images/scissors2.jpg"
+        choice1: choice1, 
       });
     shoot();
     imgChange();
@@ -470,6 +470,10 @@ function shoot() {
     }
     if ((choice1 != "x") && (choice2 != "x")) {
       $("#status").html("BAM!");
+      dataRef.ref().update({
+        opPic: opPic,
+        uPic: uPic
+      });
       if (choice1 === choice2) {
           console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
           $("#status").html("It's a TIE");
