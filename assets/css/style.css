@@ -92,3 +92,8 @@ div.exception {
 	font-weight: 700;
 	display: none;
 }
+
+#text {
+	max-height: 100px;
+	margin: 0px auto;
+}

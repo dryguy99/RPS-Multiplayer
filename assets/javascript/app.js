@@ -229,6 +229,7 @@ function mylogIn () {
   
   if (!n2) {
     resetGame();
+    startMessage();
     n2 = true;
     name2 = $("#name").val().trim();
     if (name2 === "") {
@@ -277,6 +278,12 @@ function clearFields () {
   $("#email").html("");
   $("#password").html("");
   console.log("clear input fields");
+}
+//-----------------------------------------------------------------
+// run messaging here 
+// note: use id text to display, id mytext to get input, onclick id textbtn 
+function startMessage() {
+
 }
 //-----------------------------------------------------------------
 // turn off game display and turn on signin, turn off logout
