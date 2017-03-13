@@ -1,13 +1,22 @@
 body {
-	max-width: 900px;
+	max-width: 1024px;
+	background: url("../images/topography.png");
 	margin: 0px auto;
 	display: flex;
 	min-height: 100vh;	
 	box-sizing: border-box;
 }
 
+h3 {
+	font-size: 22px;
+	font-weight: 600;
+}
+h3#p1, h3#p2 {
+	font-size: 30px;
+	font-weight: 700;
+}
 img.mysize {
-	max-height: 150px;
+	max-height: 300px;
 	max-width: 300px;
 }
 h1.jumbotron {
@@ -37,6 +46,9 @@ h2#status {
 .player {
 	display: none;
 }
+#player1, #player2 {
+	min-width: 100px;
+}
 
 p.check {
 	font-weight: 600;
@@ -55,6 +67,7 @@ input[type=checkbox] {
 }
 .check {
 	line-height: 2.0;
+	background: transparent;
 }
 button:focus {
 	outline: none;
@@ -70,5 +83,12 @@ nav {
 	display: none;
 }
 #logout2 {
+	display: none;
+}
+div.exception {
+	line-height: 1.5;
+	background: #ffffb3;
+	font-size: 18px;
+	font-weight: 700;
 	display: none;
 }

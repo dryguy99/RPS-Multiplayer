@@ -39,8 +39,11 @@
                 <input id="computercheck" class="check" type="checkbox" name="computer" value="false"> Computer 
                 <input id="p1check" class="check" type="checkbox" name="p2" value="false"> Another Player
                 <br>
-                <br>
               </p>
+              <div class="exception">
+                <div class="error"></div>
+                <div class="email"></div>
+              </div>
             </div>
             
             <!--input info for sign in to game -->
@@ -79,9 +82,10 @@
         </div>
         
         <!-- add players pictures to represent their choices-->
-        <div class="row">
-            <div id="player1" class="col-lg-2 text-center mygame">
-
+        <div class="row mygame">
+            <div class="col-lg-2 text-center mygame">
+              <div id="player1">
+              </div>
             </div>
             <div class="col-lg-4 text-center">
                 <img id="opponentPic" class="mysize mygame" src="assets/images/rock1.jpg">
@@ -90,13 +94,14 @@
             <div class="col-lg-4 text-center">
                 <img id="yourPic" class="mysize mygame" src="assets/images/scissors2.jpg">
             </div>
-            <div id="player2" class="col-lg-2 text-center mygame">
-
+            <div class="col-lg-2 text-center mygame">
+              <div id="player2">
+              </div>
             </div>
         </div>
         
         <!-- add rock paper scissors butoons-->
-        <div class="row">
+        <div class="row mygame">
             <div class="col-lg-12 text-center gamebuttons">
                 
             </div>

@@ -14,25 +14,24 @@
 //-----------------------------------------------------------------
 // set initial variables
 var name1 = "nobody";
-var name2 = "nobody";   
-var yourChoice = "";
+var name2 = "nobody";
+var nameArray = ["Dante", "Rocco", "Giana", "Kaira", "Verena", "Aldis", "Primrose", "Rosabel", "Suri", "Zelda", "Nova", "Taj", "Evelina", "Cosimia", "Krishna", "Alegra", "Kenji"];
+var myName = "";
 var computerChoices = ["rock", "paper", "scissors"];
-var opponentChoice = "";
-var theirChoice;
-var opPic = "";
-var uPic = "";
+var computerChoice = "x";
+var picOne = "";
+var picTwo = "";
 var p1winCount = 0;
 var p1lossCount = 0;
 var p1tieCount = 0;
 var p2winCount = 0;
 var p2lossCount = 0;
 var p2tieCount = 0;
+var countclicks = 0;
 var computer = false;
-var p1 = true;
 var cwin = 0;
 var closs = 0;
 var ctie = 0;
-var players = 2;
 var userNow = firebase.auth().currentUser;
 var n2 = false;
 var n1 = false;
@@ -41,7 +40,8 @@ var pclassArray = ["p2", "p1"];
 var runafter1change = true;
 var choice1 = "x";
 var choice2 = "x";
-var startimg = "assets/images/rock1.jpg";
+var startimg = "assets/images/placeholder.jpeg";
+var emailArray = ["<br>Waiting for email Verification...", "<br>Waiting for email Verification.....", "<br>Waiting for email Verification.......", "<br>Waiting for email Verification.........", "<br>Waiting for email Verification...........", "<br>Waiting for email Verification.............", "<br>Waiting for email Verification..............."]
 //---------------------------------------------------------------
 // set listner values
 var player2Ref = dataRef.ref('player2');
@@ -58,14 +58,12 @@ var pic2Ref = dataRef.ref('uPic');
  console.log("check firebase values before login");
     // is there a player one?
     playerRef.on('value', function(snapshot) {
-      if (snapshot.val()) {
-        n1 = snapshot.val();}
+        n1 = snapshot.val();
       console.log("updating n1 from firebase: " + n1);
-    });
+     });
     // is there a player two?
     player2Ref.on('value', function(snapshot) {
-      if (snapshot.val()) {
-        n2 = snapshot.val();}
+        n2 = snapshot.val();
       console.log("updating n2 from firebase: " + n2);
     });
 //---------------------------------------------------------------
@@ -86,58 +84,25 @@ var pic2Ref = dataRef.ref('uPic');
     //update player 1 choice for game.
    choice1Ref.on('value', function(snapshot) {
       choice1 = snapshot.val();
-      if (choice1 != "x" && choice2 != "x") {
-          shoot();}
+      shoot();
     });
     //update player 2 choice for game.
     choice2Ref.on('value', function(snapshot) {
       choice2 = snapshot.val();
-      if (choice1 != "x" && choice2 != "x") {
-          shoot();}
+      shoot();
     });
 //---------------------------------------------------------------   
     //update player 1 picture
     pic1Ref.on('value', function(snapshot) {
       console.log(snapshot.val());
-        opPic = snapshot.val();
-        imgChange();
+      picOne = snapshot.val();
+      imgChange();
     });
     // update player 2 picture.
     pic2Ref.on('value', function(snapshot) {
-        uPic = snapshot.val();
-        imgChange();
+      picTwo = snapshot.val();
+      imgChange();
     });
-   
-
-    
-
-//-----------------------------------------------------------------
-
-// allow signin with google - doesn't work & need fixing
-      //var provider = new firebase.auth.GoogleAuthProvider();
-      //userAuth.signInWithRedirect(provider);
-//-----------------------------------------------------------------
-    //
-    /*userAuth.getRedirectResult().then(function(result) {
-      console.log("redirect");
-      if (result.credential) {
-       // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
-      console.log("Token: " + token);
-      // ...
-      }
-      // The signed-in user info.
-      var user = result.user;
-      }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-      });*/
 //-----------------------------------------------------------------
     // Get Elements
     const txtName = $("#name")[0];
@@ -147,12 +112,7 @@ var pic2Ref = dataRef.ref('uPic');
     const btnSignUp = $("#signup")[0];
     const btn1Logout = $("#logout1")[0];
     const btn2Logout = $("#logout2")[0];
-//-----------------------------------------------------------------
-// if already logged in on refresh logout
-  if (userAuth.currentUser) {
-    userAuth.signOut();
-    mylogOut();
-  }
+
 //-----------------------------------------------------------------
 // add sign out event
 // player 1 logout
@@ -188,70 +148,76 @@ var pic2Ref = dataRef.ref('uPic');
       const email = txtEmail.value;
       const pass = txtPassword.value;
       const name = txtName.value;
-      //const auth = firebase.auth();
       const promise = userAuth.signInWithEmailAndPassword(email, pass);
       //signin
-      promise.catch(e => console.log(e.message));
+      promise.catch(function (e) {
+        console.log(e.message);
+        $(".exception").css("display", "block");
+        $(".error").html("<p>" + e.message + "</p>");
+        $(".error").append("Please try again or press signup if you are a new user.");
+      });
     });
 //-----------------------------------------------------------------
     //add signup event
     btnSignUp.addEventListener("click", e => {
         //get email and password
-        // TODO: Check 4 real emails
         emailSent = false;
         const email = txtEmail.value;
         const pass = txtPassword.value;
         const name = txtName.value;
         const auth = firebase.auth();
-        //const user = 
         // Sign In
         const promise = auth.createUserWithEmailAndPassword(email, pass);
-        promise.catch(e => console.log(e.message));
+        promise.catch(function (e) {
+          console.log(e.message);
+          $(".exception").css("display", "block");
+          $(".error").html("<p>" + e.message + "</p>");
+          $(".error").append("Please try again or press signup if you are a new user.");
+        });
     });
 //-----------------------------------------------------------------    
 // when authorizied user state changes
   userAuth.onAuthStateChanged(firebaseUser => {
     
-      console.log(firebaseUser);
-      // if logged in:
-      if (firebaseUser){ 
-        console.log("n2: " + n2 + " n1: " + n1);
+    console.log(firebaseUser);
+    // if logged in:
+    if (firebaseUser){ 
+        console.log("n2: " + n2 + " n1: " + n1 + " name: " + name);
         firebaseUser.updateProfile({
         displayName: name});
-
-        
         // check to see if email is verified
-        // temporarilyh disabled for testing
-        /*if (!firebaseUser.emailVerified) {
-          verifyEmail();
+      if (!firebaseUser.emailVerified) {
+          verifyEmail(firebaseUser);
           console.log("email Sent");
           emailSent = true;
-        }
-        else { mylogIn(); }*/
-        mylogIn(); // need  to delete after reinstating email verification
-        runafter1change = false;
-        // if email is sent check every second to see if verified
-        if (emailSent){
-          var mytimer = setInterval(function() {
-            firebase.auth().currentUser.reload();
-            if (firebase.auth().currentUser.emailVerified) {
-              console.log("Email Verified!");
-              mylogIn();
-              myStopFunction(mytimer);
-            }
-          }, 1000);
-        }
-       // end login tasks
-        //if logged out
-        else if (!firebaseUser){
-          //set up to log user in
-          mylogOut(); // turn off game and allow login
-          }
-      }
-        
+      } else { mylogIn();} 
+      // if email is sent check every second to see if verified
+      if (emailSent){
+          var z = 0;
+
+          setIntervalX(function () {
+              $(".email").html(emailArray[z]);
+              z++;
+              if (z >= emailArray.length) { z = 0; }
+              firebaseUser.reload();
+              if (firebaseUser.emailVerified) {
+                  window.clearInterval(intervalID);
+                  $(".email").html("");
+                  $(".error").html("");
+                  $(".exception").css("display", "none");
+                  mylogIn();
+                  console.log("Email Verified!"); 
+              }
+          }, 2000, 60);
+      } // end signin tasks
+    }//end if logged in
+    //if not a firebase user
+    else if (!firebaseUser){
+        //set up to log user in
+        mylogOut(); // turn off game and allow login
+    } 
+    
   });
-
-
 //-----------------------------------------------------------------
 // turn on game display and turn off setup but allow logout
 function mylogIn () {
@@ -260,11 +226,15 @@ function mylogIn () {
   $(".mygame").css("display", "inline");
   $(".setup").css("display", "none");
   $(".player").css("display", "inline");
-  yourChoice = "";
   
   if (!n2) {
+    resetGame();
     n2 = true;
     name2 = $("#name").val().trim();
+    if (name2 === "") {
+          namePick();
+          name2 = myName;
+        }
     $("#logout2").css("display", "inline");
     $("#logout1").css("display", "none");
     dataRef.ref().set({
@@ -277,12 +247,21 @@ function mylogIn () {
         usertwo: name2,
         userone: name1
       });
+    imgChange();
     displayPlayer2 ();
     signupIn ();}
 
   else if (!n1) {
+    resetGame ();
     n1 = true;
     name1 = $("#name").val().trim();
+    if (name1 === "") {
+          namePick();
+          name2 = myName;
+        }
+    dataRef.ref().update({
+        player1: n1
+    });
     $("#logout2").css("display", "none");
     $("#logout1").css("display", "inline");
     displayPlayer1 ();
@@ -291,47 +270,34 @@ function mylogIn () {
     $("#status").html("There are already 2 people playing. Please wait or choose to play the computer.");
   }
 }
-
-
 //-----------------------------------------------------------------
-
+//clear login fields
 function clearFields () {
   $("#name").html("");
   $("#email").html("");
   $("#password").html("");
   console.log("clear input fields");
 }
-
-
 //-----------------------------------------------------------------
 // turn off game display and turn on signin, turn off logout
 function mylogOut () {
   $(".mygame").css("display", "none");
   $(".setup").css("display", "inline");
   $(".player").css("display", "none");
-  if (players < 2) {
-    players++;
-  }
-}
-//-----------------------------------------------------------------
-// stop interval timer
-function myStopFunction() {
-    clearInterval(mytimer);
-    break;
 }
 //-----------------------------------------------------------------
 // send verification email
-function verifyEmail () {
-  //checkemail = userNow.emailVerified;
-  //if (checkemail === null) 
-      var user = userAuth.currentUser;
-      user.sendEmailVerification().then(function() {
-          alert("Verification Email Sent.  Please verify your account to continue.");
-
-          // Email sent.
-          }, function(error) {
-          alert(error); // still need to deal with errors
-      });
+function verifyEmail (user) {
+    user.sendEmailVerification().then(function() {
+        $(".exception").css("display", "block");
+        $(".error").html("<p>Verification Email Sent.<br>Please verify your account to continue.</p>");
+        $(".error").append("Once Your Email Account is verified, the Game will load automatically.");
+    // Email sent.
+    },  function(error) {
+          $(".exception").css("display", "block");
+          $(".error").html("<p>" + error + "</p>");
+          $(".error").append("Please check your email address and press 'SIGNUP' Again.");
+        });
 }
 //-----------------------------------------------------------------
 // set firebase data and user names for gameplay
@@ -364,116 +330,184 @@ function displayPlayer2 () {
 function displayPlayer1 () {
   $(".p1").css("display", "inline");
   $(".p2").css("display", "none");
+  $('.exception').css("display", "none");
 }
 //-----------------------------------------------------------------
-
-
+// if player 2 selects rock set choice
 function rock2() {
     choice2 = "rock";
-    uPic = "assets/images/rock2.jpg";
+    picTwo = "assets/images/rock.jpg";
     console.log(choice2);
     dataRef.ref().update({
         choice2: choice2
       });
-    shoot();
-    imgChange();
+    if (computer) {
+      compShoot();
+    }
 }
-
+// if player 1 selects rock set choice
 function rock1() {
     choice1 = "rock";
-    opPic = "assets/images/rock2.jpg";
-    console.log(choice1);
+    picOne = "assets/images/rock.jpg";
+    console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
       });
-    shoot();
-    imgChange();
 }
 //-----------------------------------------------------------------
-
+// if player 2 selects paper set choice
 function paper2() {
     choice2 = "paper";
-    uPic = "assets/images/paper2.jpg";
+    picTwo = "assets/images/paper.jpg";
     console.log(choice2);
     dataRef.ref().update({
         choice2: choice2 
       });
-    shoot();
-    imgChange();
+    if (computer) {
+      compShoot();
+    }
 }
-
+// if player 1 selects paper set choice
 function paper1() {
     choice1 = "paper";
-    opPic = "assets/images/paper2.jpg";
-    console.log(choice1);
+    picOne = "assets/images/paper.jpg";
+    console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
       });
-    shoot();
-    imgChange();
 }
 //-----------------------------------------------------------------
-
+// if player 2 selects scissors set choice
 function scissors2() {
     choice2 = "scissors";
-    uPic = "assets/images/scissors2.jpg";
+    picTwo = "assets/images/scissors2.jpg";
     console.log(choice2);
     dataRef.ref().update({
         choice2: choice2
       });
-    shoot();
-    imgChange();
+    if (computer) {
+      compShoot();
+    }
 }
-
+// if player 1 selects scissors set choice
 function scissors1() {
     choice1 = "scissors";
-    opPic = "assets/images/scissors2.jpg";
-    console.log(choice1);
+    picOne = "assets/images/scissors2.jpg";
+    console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
       });
-    shoot();
-    imgChange();
 }
 //-----------------------------------------------------------------
-
-function updateStats () {
-    $("#player1").html("Wins: " + p1winCount);
-    $("#player1").append(" - Losses: " + p1lossCount);
-    $("#player1").append(" - Ties: " + p1tieCount);
-    $("#player2").html("Wins: " + p2winCount);
-    $("#player2").append(" - Losses: " + p2lossCount);
-    $("#player2").append(" - Ties: " + p2tieCount);
+// update players 1 win/loss/tie stats to screen
+function updatep1Stats () {
+    $("#player1").html("<h3>Wins: " + p1winCount + "</h3><br>");
+    $("#player1").append("<h3>Losses: " + p1lossCount + "</h3><br>");
+    $("#player1").append("<h3>Ties: " + p1tieCount + "</h3>");
+}
+//-----------------------------------------------------------------
+// update player 2 win/loss/tie stats to screen
+function updatep2Stats () {
+    $("#player2").html("<h3>Wins: " + p2winCount + "</h3><br>");
+    $("#player2").append("<h3>Losses: " + p2lossCount + "</h3><br>");
+    $("#player2").append("<h3>Ties: " + p2tieCount + "</h3>");
+}
+//-----------------------------------------------------------------
+// update computer win/loss/tie stats to screen
+function updatecompStats () {
+    $("#player1").html("<h3>Wins: " + cwin + "</h3><br>");
+    $("#player1").append("<h3>Losses: " + closs + "</h3><br>");
+    $("#player1").append("<h3>Ties: " + ctie + "</h3>");
 }
 //-----------------------------------------------------------------
 
 function computerPick () {
-    theirChoice = computerChoices[Math.floor(Math.random()*3)];
-    console.log(theirChoice);
+    computerChoice = computerChoices[Math.floor(Math.random()*3)];
+    console.log(computerChoice);
 }
 //-----------------------------------------------------------------
-
-function shoot() {
+// pick random name for person if they don't provide one
+function namePick () {
+    myName = nameArray[Math.floor(Math.random()*17)];
+    console.log(myName);
+}
+//-----------------------------------------------------------------
+//set up a interval timer
+var intervalID;
+function setIntervalX(callback, delay, repetitions) {
+    var y = 0;
+    intervalID = window.setInterval(function () {
+       callback();
+       if (++y === repetitions) {
+           window.clearInterval(intervalID);
+       }
+    }, delay);
+}
+//-----------------------------------------------------------------
+//run logic to play locally against the computer & update screen
+function compShoot() {
+  console.log("running computer shoot")
     if (computer) {
       computerPick ();
-    }
-    switch (theirChoice) {
-      case "rock":
-        opPic = "assets/images/rock2.jpg";
-        break;
-      case "scissors":
-        opPic = "assets/images/scissors2.jpg";
-        break;
-      case "paper":
-        opPic = "assets/images/paper2.jpg";
-        break;
-    }
-    if ((choice1 != "x") && (choice2 != "x")) {
-      $("#status").html("BAM!");
+    
+      switch (computerChoice) {
+        case "rock":
+          picOne = "assets/images/rock.jpg";
+          break;
+        case "scissors":
+          picOne = "assets/images/scissors2.jpg";
+          break;
+        case "paper":
+          picOne = "assets/images/paper.jpg";
+          break;
+      }
+      imgChange();
+      if (computerChoice === choice2) {
+          console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
+          $("#status").html("It's a TIE");
+          ctie++;
+          p2tieCount++;
+
+        } else if (computerChoice === "rock" && choice2 === "scissors") {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html("You Lost...");
+            cwin++;
+            p2lossCount++;
+
+        } else if (computerChoice === "paper" && choice2 === "rock") {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html("You Lost ...");
+            cwin++;
+            p2lossCount++;
+
+        } else if (computerChoice === "scissors" && choice2 === "paper") {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html("You Lost ...");
+            cwin++;
+            p2lossCount++;
+
+        } else {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
+            $("#status").html("You Won!!!!");
+            closs++;
+            p2winCount++;
+      }
+      updatecompStats();
+      updatep2Stats();
+    } 
+}
+//---------------------------------------------------------------
+// run game logic for 2 player game and update screen
+var a = 0;
+function shoot() {
+    console.log("running shoot")
+    if ((choice1 != "x") && (choice2 != "x") && (n1 === true) && (n2 ===true)) {
+      console.log("in Shoot picOne = " + picOne + " pictwo = " + picTwo);
       dataRef.ref().update({
-        opPic: opPic,
-        uPic: uPic
+        opPic: picOne,
+        uPic: picTwo
       });
+      
       if (choice1 === choice2) {
           console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
           $("#status").html("It's a TIE");
@@ -481,82 +515,108 @@ function shoot() {
           p2tieCount++;
           ctie++;
 
-      } else if (choice1 === "rock" && choice2 === "scissors") {
-          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
-          $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
-          p1lossCount++;
-          p2winCount++;
-          closs++;
-      } else if (choice1 === "paper" && choice2 === "rock") {
-          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
-          $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
-          p2lossCount++
-          p1winCount++;
-          closs++;
-      } else if (choice1 === "scissors" && choice2 === "paper") {
-          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
-          $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
-          p2winCount++;
-          closs++;
-      } else {
-          console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
-          $("#status").html(name1 + "Lost... -- "+ name2 +" Won!!!!");
-          p1lossCount++;
-          p2winCount++;
-          cwin++;
+        } else if (choice1 === "rock" && choice2 === "scissors") {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html(name1 + " Won!!! -- "+ name2 +" Lost...");
+            p1winCount++;
+            p2lossCount++;
+
+        } else if (choice1 === "paper" && choice2 === "rock") {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
+            p1winCount++;
+            p2lossCount++;
+
+        } else if (choice1 === "scissors" && choice2 === "paper") {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
+            p1winCount++;
+            p2lossCount++;
+
+        } else {
+            console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
+            $("#status").html(name1 + " Lost... -- "+ name2 +" Won!!!!");
+            p1lossCount++;
+            p2winCount++;
+            cwin++;
       }
-      updateStats();
+      updatep1Stats();
+      updatep2Stats();
       dataRef.ref().update({
           choice1: "x",
           choice2: "x"
         });
-      }
-    else {
-      $("#status").html("Waiting for Other Player....");
+      countclicks = 0;
+    } else {
+        console.log("running else on shoot, a = " + a);
+        if (a === 3) {
+          console.log("inside if, a = " + a);
+          if (countclicks >= 5) { countclicks = 0;}
+          var waitArray = ["Waiting for the Other Player...", "STILL Waiting for the Other Player...", "Yes, You are really WAITING for the Other Player", "Impatient are we? We're Still Waiting...", "Honestly, I don't know why they can't make a choice, <br>Text Them already!"];
+          $("#status").html(waitArray[countclicks]);
+          countclicks++;
+          a = 0;
+        } else { a++; }
     }
 }
 //-----------------------------------------------------------------
 
 function resetGame() {
+  a = 0;
+  countclicks = 0;
   p2winCount = 0;
   p2lossCount = 0;
   p2tieCount = 0;
-  opPic = "";
-  uPic = "";
-  yourChoice = "none";
-  imgChange();
-  updateStats();
+  p1winCount = 0;
+  p1lossCount = 0;
+  p1tieCount = 0;
+  cwin = 0;
+  closs = 0;
+  ctie = 0;
+  picOne = startimg;
+  picTwo = startimg;
+  choice1 = "x";
+  choice2 = "x";
+  dataRef.ref().update({
+    opPic: picOne
+  });
+  dataRef.ref().update({
+    uPic: picTwo
+  });
+  dataRef.ref().update({
+    choice2: choice2
+  });
+  dataRef.ref().update({
+    choice1: choice1
+  });
+  updatep2Stats();
+  if (computer) {
+    name1 = "Computer";
+    updatecompStats();
+  }else updatep2Stats();
 
 }
 //-----------------------------------------------------------------
-
+// update choice pictures so you may see what your opponent chose.
 function imgChange() {
-    $("#yourPic").attr("src", uPic);
-    $("#opponentPic").attr("src", opPic);
+    $("#yourPic").attr("src", picTwo);
+    $("#opponentPic").attr("src", picOne);
 }
 //-----------------------------------------------------------------
-
-
+// check to see if they are playing the computer or another player
 function check() {
+  // set listener on checkbox
   $('input[type="checkbox"]').on('change', function() {
+    //only allow one checkbox to be clicked
     $('input[type="checkbox"]').not(this).prop('checked', false);
+    // set boolean for computer
     computer = $("#computercheck").prop('checked');
-    p1 = $("#p1check").prop('checked');
-    console.log("check function: Computer: " +computer + " Player 2: " + p1);
+    console.log("check function: Computer?: " +computer + " 2 player?: " + p1);
     if (computer && !n1) {
       name1 = "Computer";
-      dataRef.ref().update({
-        userone: name1
-      });
-    }
-    else if (computer && !n2) {
-      name2 = "Computer";
-      dataRef.ref().update({
-        usertwo: name2
-      });
     }
   });
-    console.log("check function end: computer: " + computer + " Player 2: " + p1);
+    console.log("check function end: computer: " + computer + "player 1 name: " + name1 + " Player 2: " + name1);
 }
 
 //-----------------------------------------------------------------
@@ -587,28 +647,18 @@ function setButtons() {
   $("#")
 
 }
-//var name1Ref = dataRef.ref('name/userone');
-//var name2Ref = dataRef.ref('name/usertwo');
-
+//-----------------------------------------------------------------
+// display players names
 function setPlayers () {
   console.log("display players names p1: "+name1+ " p2: "+name2);
   $("#p1").html(name1);
   $("#p2").html(name2);
 }
-
-//function playGame () {
-//  $(".player").css("display", "inline");
-// $(".mygame").css("display", "inline");
-//}
-function runGame() {
-    
-  }
+//-----------------------------------------------------------------
+// once loaded stet up game
 $(document).ready( function startGame() {
     $('#p1check').prop('checked', true);
     check();
-    resetGame();
-    imgChange();
     createButtons();
     setButtons();
 });
-
