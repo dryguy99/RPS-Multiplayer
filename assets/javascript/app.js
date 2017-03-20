@@ -59,31 +59,24 @@ var messageRef = dataRef.ref().child("message");
 
 //---------------------------------------------------------------
 // check key firebase data values before login
-
- //console.log("check firebase values before login");
     // is there a player one?
     playerRef.on('value', function(snapshot) {
         n1 = snapshot.val();
-      //console.log("updating n1 from firebase: " + n1);
      });
     // is there a player two?
     player2Ref.on('value', function(snapshot) {
         n2 = snapshot.val();
-      //console.log("updating n2 from firebase: " + n2);
     });
 //---------------------------------------------------------------
     //update player one name.
     user1Ref.on('value', function(snapshot) {
-      //console.log(snapshot.val());
         name1 = snapshot.val();
         $("#p1").html(name1);
-      //console.log("updating user1 from firebase to: " + name1);
     });
     // update player 2 name.
     user2Ref.on('value', function(snapshot) {
         name2 = snapshot.val();
         $("#p2").html(name2);
-      //console.log("updating user2 from firebase to: " + name2);
     });
 //---------------------------------------------------------------   
     //update player 1 choice for game.
@@ -117,7 +110,6 @@ var messageRef = dataRef.ref().child("message");
 // update chat
     messageRef.on('value', function(snapshot) {
       messageArray = snapshot.val();
-      //console.log(messageArray);
       $(".myChat").empty();
       for (i=0; i < messageArray.length; i++) {
         $(".myChat").prepend(messageArray[i]);
@@ -152,7 +144,6 @@ var messageRef = dataRef.ref().child("message");
           player1: n1,
           message: messageArray
         });
-        //console.log("updated player1 to firebase as false");
       }
       userAuth.signOut();
       mylogOut();
@@ -172,7 +163,6 @@ var messageRef = dataRef.ref().child("message");
           player2: n2,
           message: messageArray
         });
-        //console.log("updated player2 to firebase as false");
       }
       userAuth.signOut();
       mylogOut();
@@ -187,7 +177,6 @@ var messageRef = dataRef.ref().child("message");
       const promise = userAuth.signInWithEmailAndPassword(email, pass);
       //signin
       promise.catch(function (e) {
-        //console.log(e.message);
         $(".exception").css("display", "block");
         $(".error").html("<p>" + e.message + "</p>");
         $(".error").append("Please try again or press signup if you are a new user.");
@@ -207,14 +196,15 @@ var messageRef = dataRef.ref().child("message");
         if (leng > 5) {
           const promise = auth.createUserWithEmailAndPassword(email, pass);
           promise.catch(function (e) {
-            //console.log(e.message);
+            // handle errors
             $(".exception").css("display", "block");
             $(".error").html("<p>" + e.message + "</p>");
-            $(".error").append("Please try again or press signup if you are a new user.");
+            $(".error").append("Please try again.");
           });
         } else {
-            (".exception").css("display", "block");
-            $(".error").append("Your password must be at least 6 characters long. Please try again.");
+            //require a longer password
+            $(".exception").css("display", "block");
+            $(".error").html("Your password must be at least 6 characters long. Please try again.");
         }
     });
     
@@ -222,17 +212,16 @@ var messageRef = dataRef.ref().child("message");
 // when authorizied user state changes
   userAuth.onAuthStateChanged(firebaseUser => {
     
-    //console.log(firebaseUser);
     // if logged in:
     if (firebaseUser){ 
-        //console.log("n2: " + n2 + " n1: " + n1 + " name: " + name);
         firebaseUser.updateProfile({
         displayName: name});
         // check to see if email is verified
       if (!firebaseUser.emailVerified) {
           verifyEmail(firebaseUser);
-          //console.log("email Sent");
           emailSent = true;
+          $(".exception").css("display", "block");
+          $(".error").html("Email sent. please verify email to continue.");
       } else { mylogIn();} 
       // if email is sent check every second to see if verified
       if (emailSent){
@@ -598,41 +587,41 @@ function compShoot() {
       }
       imgChange();
       if (computerChoice === choice2) {
-          //console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
+        
           $("#status").html("It's a TIE");
           ctie++;
           p2tieCount++;
 
         } else if (computerChoice === "rock" && (choice2 === "scissors" || choice2 === "lizard")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html("You Lost...");
             cwin++;
             p2lossCount++;
 
         } else if (computerChoice === "paper" && (choice2 === "rock" || choice2 === "spock")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html("You Lost ...");
             cwin++;
             p2lossCount++;
 
         } else if (computerChoice === "scissors" && (choice2 === "paper" || choice2 === "lizard")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html("You Lost ...");
             cwin++;
             p2lossCount++;
 
         } else if (computerChoice === "lizard" && (choice2 === "paper" || choice2 === "spock")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html("You Lost ...");
             cwin++;
             p2lossCount++;
         } else if (computerChoice === "spock" && (choice2 === "rock" || choice2 === "scissors")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html("You Lost ...");
             cwin++;
             p2lossCount++;
         } else {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
+            
             $("#status").html("You Won!!!!");
             closs++;
             p2winCount++;
@@ -662,44 +651,44 @@ function shoot() {
       console.log("updating pic 2: " + picTwo);
       
       if (choice1 === choice2) {
-          //console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
+          
           $("#status").html("It's a TIE");
           p1tieCount++;
           p2tieCount++;
           ctie++;
 
         } else if (choice1 === "rock" && (choice2 === "scissors" || choice2 === "lizard")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html(name1 + " Won!!! -- "+ name2 +" Lost...");
             p1winCount++;
             p2lossCount++;
 
         } else if (choice1 === "paper" && (choice2 === "rock" || choice2 === "spock")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
             p1winCount++;
             p2lossCount++;
 
         } else if (choice1 === "scissors" && (choice2 === "paper" || choice2 === "lizard")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
             p1winCount++;
             p2lossCount++;
 
         } else if (choice1 === "lizard" && (choice2 === "paper" || choice2 === "spock")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
             p1winCount++;
             p2lossCount++;
 
         } else if (choice1 === "spock" && (choice2 === "rock" || choice2 === "scissors")) {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            
             $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
             p1winCount++;
             p2lossCount++;
 
         } else {
-            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
+            
             $("#status").html(name1 + " Lost... -- "+ name2 +" Won!!!!");
             p1lossCount++;
             p2winCount++;
@@ -713,9 +702,9 @@ function shoot() {
         });
       countclicks = 0;
     } else {
-        //console.log("running else on shoot, a = " + a);
+        
         if (a === 3) {
-          //console.log("inside if, a = " + a);
+          
           if (countclicks >= 5) { countclicks = 0;}
           var waitArray = ["Waiting for the Other Player...", "STILL Waiting for the Other Player...", "Yes, You are really WAITING for the Other Player", "Impatient are we? We're Still Waiting...", "Honestly, I don't know why they can't make a choice, <br>Text Them already!"];
           $("#status").html(waitArray[countclicks]);
@@ -773,12 +762,12 @@ function check() {
     $('input[type="checkbox"]').not(this).prop('checked', false);
     // set boolean for computer
     computer = $("#computercheck").prop('checked');
-    //console.log("check function: Computer?: " +computer + " 2 player?: " + p1);
+    // does user want to play the computer
     if (computer && !n1) {
       name1 = "Computer";
     }
   });
-    //console.log("check function end: computer: " + computer + "player 1 name: " + name1 + " Player 2: " + name1);
+    
 }
 
 //-----------------------------------------------------------------
@@ -814,7 +803,7 @@ function setButtons() {
 //-----------------------------------------------------------------
 // display players names
 function setPlayers () {
-  //console.log("display players names p1: "+name1+ " p2: "+name2);
+  
   $("#p1").html(name1);
   $("#p2").html(name2);
   if (computer) {
