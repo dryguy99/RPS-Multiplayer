@@ -662,19 +662,31 @@ function shoot() {
           p2tieCount++;
           ctie++;
 
-        } else if (choice1 === "rock" && choice2 === "scissors") {
+        } else if (choice1 === "rock" && (choice2 === "scissors" || choice2 === "lizard")) {
             //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
             $("#status").html(name1 + " Won!!! -- "+ name2 +" Lost...");
             p1winCount++;
             p2lossCount++;
 
-        } else if (choice1 === "paper" && choice2 === "rock") {
+        } else if (choice1 === "paper" && (choice2 === "rock" || choice2 === "spock")) {
             //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
             $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
             p1winCount++;
             p2lossCount++;
 
-        } else if (choice1 === "scissors" && choice2 === "paper") {
+        } else if (choice1 === "scissors" && (choice2 === "paper" || choice2 === "lizard")) {
+            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
+            p1winCount++;
+            p2lossCount++;
+
+        } else if (choice1 === "lizard" && (choice2 === "paper" || choice2 === "spock")) {
+            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
+            p1winCount++;
+            p2lossCount++;
+
+        } else if (choice1 === "spock" && (choice2 === "rock" || choice2 === "scissors")) {
             //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
             $("#status").html(name1 + " Won!!!! -- " + name2 + " Lost ...");
             p1winCount++;
