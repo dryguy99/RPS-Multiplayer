@@ -79,6 +79,9 @@ nav {
 	margin: 5px 0px 0px 0px auto;
 	justify-content: center;
 }
+.loggedIn {
+	display: none;
+}
 #logout1 {
 	display: none;
 }

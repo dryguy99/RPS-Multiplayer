@@ -84,12 +84,16 @@ var pic2Ref = dataRef.ref('uPic');
     //update player 1 choice for game.
    choice1Ref.on('value', function(snapshot) {
       choice1 = snapshot.val();
-      shoot();
+      if (n1) {
+        shoot();
+      }
     });
     //update player 2 choice for game.
     choice2Ref.on('value', function(snapshot) {
       choice2 = snapshot.val();
-      shoot();
+      if (n2) {
+        shoot();
+      }
     });
 //---------------------------------------------------------------   
     //update player 1 picture
@@ -121,6 +125,8 @@ var pic2Ref = dataRef.ref('uPic');
       if (n1) {
         n1 = false;
         $("#logout1").css("display", "none");
+        $(".loggedIn").css("display", "none");
+        $(".loggedIn").html("");
         dataRef.ref().update({
           player1: n1});
         console.log("updated player1 to firebase as false");
@@ -134,6 +140,8 @@ var pic2Ref = dataRef.ref('uPic');
       if (n2) { 
         n2 = false;
         $("#logout2").css("display", "none");
+        $(".loggedIn").css("display", "none");
+        $(".loggedIn").html("");
         dataRef.ref().update({
           player2: n2});
         console.log("updated player2 to firebase as false");
@@ -166,15 +174,22 @@ var pic2Ref = dataRef.ref('uPic');
         const pass = txtPassword.value;
         const name = txtName.value;
         const auth = firebase.auth();
+        var leng = pass.length;
         // Sign In
-        const promise = auth.createUserWithEmailAndPassword(email, pass);
-        promise.catch(function (e) {
-          console.log(e.message);
-          $(".exception").css("display", "block");
-          $(".error").html("<p>" + e.message + "</p>");
-          $(".error").append("Please try again or press signup if you are a new user.");
-        });
+        if (leng > 5) {
+          const promise = auth.createUserWithEmailAndPassword(email, pass);
+          promise.catch(function (e) {
+            console.log(e.message);
+            $(".exception").css("display", "block");
+            $(".error").html("<p>" + e.message + "</p>");
+            $(".error").append("Please try again or press signup if you are a new user.");
+          });
+        } else {
+            (".exception").css("display", "block");
+            $(".error").append("Your password must be at least 6 characters long. Please try again.");
+        }
     });
+    
 //-----------------------------------------------------------------    
 // when authorizied user state changes
   userAuth.onAuthStateChanged(firebaseUser => {
@@ -232,6 +247,8 @@ function mylogIn () {
     startMessage();
     n2 = true;
     name2 = $("#name").val().trim();
+    $(".loggedIn").css("display", "inline");
+    $(".loggedIn").html(name2 + " (logged in)");
     if (name2 === "") {
           namePick();
           name2 = myName;
@@ -256,6 +273,8 @@ function mylogIn () {
     resetGame ();
     n1 = true;
     name1 = $("#name").val().trim();
+    $(".loggedIn").css("display", "inline");
+    $(".loggedIn").html(name1 + " (logged in)");
     if (name1 === "") {
           namePick();
           name2 = myName;
