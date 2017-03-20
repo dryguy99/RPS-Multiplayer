@@ -18,7 +18,7 @@ var name1 = "nobody";
 var name2 = "nobody";
 var nameArray = ["Dante", "Rocco", "Giana", "Kaira", "Verena", "Aldis", "Primrose", "Rosabel", "Suri", "Zelda", "Nova", "Taj", "Evelina", "Cosimia", "Krishna", "Alegra", "Kenji"];
 var myName = "";
-var computerChoices = ["rock", "paper", "scissors"];
+var computerChoices = ["rock", "paper", "scissors", "lizard", "spock"];
 var computerChoice = "x";
 var picOne = "";
 var picTwo = "";
@@ -119,7 +119,7 @@ var messageRef = dataRef.ref().child("message");
       //console.log(messageArray);
       $(".myChat").empty();
       for (i=0; i < messageArray.length; i++) {
-        $(".myChat").append(messageArray[i]);
+        $(".myChat").prepend(messageArray[i]);
       }
       
     })
@@ -341,7 +341,7 @@ function startMessage() {
     event.preventDefault();
     var currentMessage = name1 + ": " + $("#mytext").val().trim() + "<br>";
     //console.log(name1 + ": " + $("#mytext").val().trim());
-    $("#mytext").empty();
+    $("#mytext").html(" ");
     messageArray.push(currentMessage);
     dataRef.ref().update({
       message: messageArray
@@ -351,7 +351,7 @@ function startMessage() {
     event.preventDefault();
     var currentMessage = name2 + ": " + $("#mytext").val().trim() + "<br>";
     //console.log(name2 + ": " + $("#mytext").val().trim());
-    $("#mytext").empty();
+    $("#mytext").html("");
     messageArray.push(currentMessage);
     dataRef.ref().update({
       message: messageArray
@@ -477,6 +477,50 @@ function scissors1() {
       });
 }
 //-----------------------------------------------------------------
+// if player 2 selects lizard set choice
+function lizard2() {
+    choice2 = "lizard";
+    picTwo = "assets/images/lizard.jpg";
+    console.log(choice2 + " pic2: " +picTwo);
+    dataRef.ref().update({
+        choice2: choice2
+      });
+    if (computer) {
+      compShoot();
+    }
+}
+// if player 1 selects lizard set choice
+function lizard1() {
+    choice1 = "lizard";
+    picOne = "assets/images/lizard.jpg";
+    console.log(choice1 + " pic1: " + picOne);
+    dataRef.ref().update({
+        choice1: choice1, 
+      });
+}
+//-----------------------------------------------------------------
+// if player 2 selects spock set choice
+function spock2() {
+    choice2 = "spock";
+    picTwo = "assets/images/spock.jpg";
+    console.log(choice2 + " pic2: " +picTwo);
+    dataRef.ref().update({
+        choice2: choice2
+      });
+    if (computer) {
+      compShoot();
+    }
+}
+// if player 1 selects spock set choice
+function spock1() {
+    choice1 = "spock";
+    picOne = "assets/images/spock.jpg";
+    console.log(choice1 + " pic1: " + picOne);
+    dataRef.ref().update({
+        choice1: choice1, 
+      });
+}
+//-----------------------------------------------------------------
 // update players 1 win/loss/tie stats to screen
 function updatep1Stats () {
     $("#player1").html("<h3>Wins: " + p1winCount + "</h3><br>");
@@ -498,9 +542,14 @@ function updatecompStats () {
     $("#player1").append("<h3>Ties: " + ctie + "</h3>");
 }
 //-----------------------------------------------------------------
-
+// have the computer randomly pick a response
 function computerPick () {
-    computerChoice = computerChoices[Math.floor(Math.random()*3)];
+  var temp;
+    do {
+      temp = computerChoices[Math.floor(Math.random()*10)];
+    }
+    while  (temp > 5);
+    computerChoice = temp;
     //console.log(computerChoice);
 }
 //-----------------------------------------------------------------
@@ -538,6 +587,12 @@ function compShoot() {
         case "paper":
           picOne = "assets/images/paper.jpg";
           break;
+        case "lizard":
+          picOne = "assets/images/lizard.jpg";
+          break;
+        case "spock":
+          picOne = "assets/images/spock.jpg";
+          return;
       }
       imgChange();
       if (computerChoice === choice2) {
@@ -546,24 +601,34 @@ function compShoot() {
           ctie++;
           p2tieCount++;
 
-        } else if (computerChoice === "rock" && choice2 === "scissors") {
+        } else if (computerChoice === "rock" && (choice2 === "scissors" || choice2 === "lizard")) {
             //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
             $("#status").html("You Lost...");
             cwin++;
             p2lossCount++;
 
-        } else if (computerChoice === "paper" && choice2 === "rock") {
+        } else if (computerChoice === "paper" && (choice2 === "rock" || choice2 === "spock")) {
             //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
             $("#status").html("You Lost ...");
             cwin++;
             p2lossCount++;
 
-        } else if (computerChoice === "scissors" && choice2 === "paper") {
+        } else if (computerChoice === "scissors" && (choice2 === "paper" || choice2 === "lizard")) {
             //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
             $("#status").html("You Lost ...");
             cwin++;
             p2lossCount++;
 
+        } else if (computerChoice === "lizard" && (choice2 === "paper" || choice2 === "spock")) {
+            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html("You Lost ...");
+            cwin++;
+            p2lossCount++;
+        } else if (computerChoice === "spock" && (choice2 === "rock" || choice2 === "scissors")) {
+            //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you won");
+            $("#status").html("You Lost ...");
+            cwin++;
+            p2lossCount++;
         } else {
             //console.log("you (right): " + choice2 + " them(left): " + choice1 + " you lost");
             $("#status").html("You Won!!!!");
@@ -700,16 +765,16 @@ function check() {
 
 //-----------------------------------------------------------------
 // create game buttons, one set for each player
-var bArray = ["rock2", "rock1", "paper2", "paper1", "scissors2", "scissors1"];
-var vArray = ["Rock", "Paper", "Scissors"];
+var bArray = ["rock2", "rock1", "paper2", "paper1", "scissors2", "scissors1", "lizard2", "lizard1", "spock2", "spock1"];
+var vArray = ["Rock", "Paper", "Scissors", "Lizard", "Spock"];
 function createButtons () {
     var k = 0;
     var j = 0;
     for (i=0;i < bArray.length;i++) {
-      if (i === 2 || i === 4) {j = 0;}
+      if (i === 2 || i === 4 || i === 6 || i === 8) {j = 0;}
       $(".gamebuttons").append('<button id="' + bArray[i] + '" class="btn-primary mysize-btn mygame ' + pclassArray[j] + '" value="' + computerChoices[k] + '">' + vArray[k] + '</button>');
       j++;
-      if (i === 1 || i === 3) {k++;}
+      if (i === 1 || i === 3 || i === 5 || i === 7) {k++;}
     }
 }
 //-----------------------------------------------------------------
@@ -723,7 +788,10 @@ function setButtons() {
   $("#scissors2").on("click", function() {scissors2();});
   $("#scissors1").on("click", function() {scissors1();});
   $("#reset").on("click", function () {resetGame();});
-
+  $("#lizard2").on("click", function () {lizard2();});
+  $("#lizard1").on("click", function () {lizard1();});
+  $("#spock2").on("click", function () {spock2();});
+  $("#spock1").on("click", function () {spock1();});
 }
 //-----------------------------------------------------------------
 // display players names

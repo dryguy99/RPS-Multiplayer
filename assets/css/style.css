@@ -3,13 +3,23 @@ body {
 	background: url("../images/topography.png");
 	margin: 0px auto;
 	display: flex;
-	min-height: 100vh;	
 	box-sizing: border-box;
+	font-family: 'Chau Philomene One', sans-serif;
+	line-height: 1.0;
 }
 
-h3 {
-	font-size: 22px;
-	font-weight: 600;
+h1 {
+	font-size: 3vw;
+	margin: 2vh;
+}
+h3#dir {
+	font-size: 2.1vw;
+	font-family: 'Chau Philomene One', sans-serif;
+	text-align: left;
+}
+h1, h2, h3, h4 {
+	font-family: 'Shrikhand', cursive;
+	margin-bottom: 1vh;
 }
 h3#p1, h3#p2 {
 	font-size: 30px;
@@ -19,15 +29,13 @@ img.mysize {
 	max-height: 300px;
 	max-width: 300px;
 }
-h1.jumbotron {
-	font-size: 30px;
-}
+
 .mysize-btn {
-	height: 75px;
-	width: 150px;
+	height: 50px;
+	width: 100px;
 	border-radius: 25px;
-	font-size: 24px;
-	margin: 10px;
+	font-size: 22px;
+	margin: 5px;
 }
 .mygame {
 	display: none;
@@ -79,6 +87,12 @@ nav {
 	margin: 5px 0px 0px 0px auto;
 	justify-content: center;
 }
+.loggedIn, #logout1, #logout2, #signup, #login, #signout, #reset {
+	font-size: 1.9vw;
+}
+#textBtn1, #textBtn2 {
+	font-size: 1.5vw;
+}
 .loggedIn {
 	display: none;
 }
@@ -103,13 +117,20 @@ div.exception {
 }
 .myChat {
 	background: url("../images/paper-bkgrd.png");
-	max-height: 10vh;
+	max-height: 15vh;
 	margin: 1vh;
+	font-size: 1.5vw;
 	overflow: auto;
 }
+#rules {
+	margin: 0px;
+	font-size: 2vw;
+}
 textarea#mytext {
-background: #e6f9ff;
+background: #e6f5ff;
 font-weight: 600;
+font-size: 1.5vw;
+margin-bottom: 1vh
 }
 
 #text {
@@ -117,4 +138,20 @@ font-weight: 600;
 	max-height: 100px;
 	margin: 0px auto;
 	display: inline;
+}
+.modal-header, .modal-footer {
+	background: #e6f5ff;
+}
+.modal-title {
+	font-size: 2vw;
+}
+.modal-body {
+	margin-left: 4vw;
+}
+#bottom {
+	font-size: 1.8vw;
+	z-index: -1;
+}
+#footer {
+	min-height: 27VH;
 }

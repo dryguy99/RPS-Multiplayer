@@ -2,38 +2,66 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>Rock Paper Scissors | Timothy Dry</title>
+    <title>Rock Paper Scissors Lizard Spock | Timothy Dry</title>
     <link rel="icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://www.gstatic.com/firebasejs/3.7.0/firebase.js"></script>
-
     <script src="https://use.fontawesome.com/94d0e78a48.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Chau+Philomene+One|Shrikhand" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
   </head>
   <body>
 
     <div class="container-fluid">
-        
-        <div class="row">
-            <div class="col-lg-12 text-center">
-              <!-- add nav pills to top during gameplay for logout & reset-->
-              <div class="text-center">
-                  <button id="logout1" class="btn btn-md btn-warning" type="submit">LOGOUT</button>
-                  <span class="loggedIn"></span>
-                  <button id="logout2" class="btn btn-md btn-warning" type="submit">LOGOUT</button>
-                  <button id="reset" class="btn btn-md btn-warning  mygame" value="reset"> RESET </button>
-              </div> 
-              <h1>ROCK PAPER SCISSORS Multiplayer</h1>
-              <h2 id="status" class="mygame">Go for it!</h2><br>
-              <h4 id="win" class="mygame"></h4>
+      
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+        <!-- add nav pills to top during gameplay for logout & reset-->
+          <div class="text-center">
+          <!-- Button trigger modal -->
+            <button id="rules" type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal">
+                    RULES
+            </button>
+            <button id="logout1" class="btn btn-md btn-warning" type="submit">LOGOUT</button>
+            <span class="loggedIn"></span>
+            <button id="logout2" class="btn btn-md btn-warning" type="submit">LOGOUT</button>
+            <button id="reset" class="btn btn-md btn-warning  mygame" value="reset"> RESET </button>
+          </div> 
+          <div>
+            <h1 class="text-center">Rock - Paper - Scissors - Lizard - Spock<br>Multiplayer</h1>
+            <h2 id="status" class="mygame text-center">Go for it!</h2><br>
+            <h4 id="win" class="mygame text-center"></h4>
+          </div>
+          <!-- Modal -->
+          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h3 class="modal-title" id="myModalLabel">Rules: Rock - Paper - Scissors - Lizard - Spock</h3>
+                </div>
+                <div class="modal-body">
+                  <img id="diagram" src="assets/images/RPSSL.gif">
+                  <h3 id="dir">Rock crushes Paper and Scissors<br>
+                      Paper covers Rock and disproves Spock<br>
+                      Scissors cuts Paper and kills Lizard<br>
+                      Lizard eats Paper and Poisons Spock<br>
+                      Spock smashes Scissors and vaporizes Rock</h3>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
         
         <!-- signin section -->
-        <div class="row setup">
-          <div class="col-sm-0 col-md-1 col-lg-2">
+      <div class="setup">
+        <div class="row">
+          <div class="col-xs-0 col-sm-0 col-md-1 col-lg-2">
           </div>
-          <div class="col-sm-12 col-md-10 col-lg-8 text-center">
+          <div class="col-xs-12 col-sm-12 col-md-10 col-lg-8 text-center">
             <div class="check"> <!--set up checkbox for multiplayer or computer-->
               <p class="check">Do you want to play the computer or another player?<br>
                 <input id="computercheck" class="check" type="checkbox" name="computer" value="false"> Computer 
@@ -45,11 +73,10 @@
                 <div class="email"></div>
               </div>
             </div>
-            
             <!--input info for sign in to game -->
             <div class="input-group input-group-lg">
-                <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
-                <input id="name" type="text" class="form-control" placeholder="Username to display during the game" aria-describedby="basic-addon1">
+              <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1"></span>
+              <input id="name" type="text" class="form-control" placeholder="Username to display during the game" aria-describedby="basic-addon1">
             </div>
             <div class="input-group input-group-lg">
               <span class="input-group-addon glyphicon glyphicon-envelope" id="basic-addon1"></span>
@@ -66,75 +93,74 @@
               <button id="logout" class="btn btn-lg btn-warning logout" type="submit">LOGOUT</button>
             </div>
           </div>
-          <div class="col-sm-0 col-md-1 col-lg-2">
+          <div class="col-xs-0 col-sm-0 col-md-1 col-lg-2">
           </div>
 
-        </div><!--end signin section-->
-      
-        <!-- this section replaces the signin section during gameplay-->
-        <div class="row">
-            <div class="col-lg-6 text-center mygame">
-                <h3 id="p1" class="p[ayer"></h3>
-            </div>
-            <div class="col-lg-6 text-center mygame">
-                <h3 id="p2" class="p[ayer"></h3>
-            </div>
         </div>
+      </div><!--end signin section-->
         
-        <!-- add players pictures to represent their choices-->
-        <div class="row mygame">
-            <div class="col-lg-2 text-center mygame">
-              <div id="player1">
-              </div>
-            </div>
-            <div class="col-lg-4 text-center">
-                <img id="opponentPic" class="mysize mygame" src="assets/images/rock.jpg">
-            </div>
-       
-            <div class="col-lg-4 text-center">
-                <img id="yourPic" class="mysize mygame" src="assets/images/scissors2.jpg">
-            </div>
-            <div class="col-lg-2 text-center mygame">
-              <div id="player2">
-              </div>
-            </div>
+          <!-- this section replaces the signin section during gameplay-->
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center mygame">
+          <h3 id="p1" class="p[ayer"></h3>
         </div>
-        
-        <!-- add rock paper scissors butoons-->
-        <div class="row mygame">
-            <div class="col-lg-12 text-center gamebuttons">
-                
-            </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center mygame">
+          <h3 id="p2" class="p[ayer"></h3>
         </div>
-
-        <!-- add text field -->
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="col-xs-0 col-sm-0 col-md-1 col-lg-2">
-            </div>
-            <div id="text" class="col-xs-12 col-sm-12 col-ms-10 col-lg-8 btn btn-group message mygame">
-              <div class="myChat">
-              </div>
-              <textarea id="mytext" class="btn btn-group" rows="1" cols="50"></textarea> 
-              <button id="textBtn1" class="btn btn-md btn-info btn-group" type="submit">Submit</button>
-              <button id="textBtn2" class="btn btn-md btn-info btn-group" type="submit">Submit</button>
-            </div>
-            <div class="col-xs-0 col-sm-0 col-md-1 col-lg-2">
-            </div>
+      </div>
+          
+      <!-- add players pictures to represent their choices-->
+      <div class="row">
+        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2 text-center">
+          <div id="player1" class="mygame">
           </div>
         </div>
-      
-      <footer class="row footer container-fluid">
-        <div class="col-sm-12 text-center">
-          <h4>Copyright &copy; 2017 Timothy Dry</h4>
+        <div class="col-xs-3 col-sm-3 col-md-4 col-lg-4 text-center mygame">
+          <img id="opponentPic" class="mysize mygame" src="assets/images/rock.jpg">
         </div>
-      </footer>
+         
+        <div class="col-xs-3 col-sm-3 col-md-4 col-lg-4 text-center">
+          <img id="yourPic" class="mysize mygame" src="assets/images/scissors2.jpg">
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2 text-center mygame">
+          <div id="player2">
+          </div>
+        </div>
+      </div>
+          
+      <!-- add rock paper scissors butoons-->
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+          <div class="gamebuttons">
+          </div>
+        </div>
+      </div>
+
+      <!-- add text field -->
+      <div id="footer" class="row">
+        <div class="col-xs-0 col-sm-0 col-md-1 col-lg-2">
+        </div>
+        <div id="text" class="col-xs-12 col-sm-12 col-ms-10 col-lg-8 btn btn-group message mygame">
+          <div class="myChat">
+          </div>
+          <textarea id="mytext" class="btn btn-group" rows="1" cols="40"></textarea> 
+          <button id="textBtn1" class="btn btn-md btn-info btn-group" type="submit">Submit</button>
+          <button id="textBtn2" class="btn btn-md btn-info btn-group" type="submit">Submit</button>
+          <br>
+        </div>
+        <div class="col-xs-0 col-sm-0 col-md-1 col-lg-2">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+          <footer id="bottom" class="text-center">Copyright &copy; 2017 Timothy Dry</footer>
+        </div>
+      </div>
     </div>
-    
-    
-    
 
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.7.0/firebase.js"></script>
     <script type="text/javascript" src="assets/javascript/app.js"></script>
 
   </body>
