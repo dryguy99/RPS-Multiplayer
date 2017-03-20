@@ -96,13 +96,11 @@ var messageRef = dataRef.ref().child("message");
 //----------------------------------------------------------------  
     //update player 1 picture
     pic1Ref.on('value', function(snapshot) {
-      console.log(snapshot.val());
       picOne = snapshot.val();
       imgChange();
     });
     // update player 2 picture.
     pic2Ref.on('value', function(snapshot) {
-      console.log(snapshot.val());
       picTwo = snapshot.val();
       imgChange();
     });
@@ -238,7 +236,6 @@ var messageRef = dataRef.ref().child("message");
                   $(".error").html("");
                   $(".exception").css("display", "none");
                   mylogIn();
-                  //console.log("Email Verified!"); 
               }
           }, 2000, 60);
       } // end signin tasks
@@ -276,7 +273,6 @@ function mylogIn () {
     $("#textBtn2").css("display", "inline");
     $("#textBtn1").css("display", "none");
     messageArray = ["Waiting for another player...<br>"];
-    console.log("setting initial values in firebase.")
     dataRef.ref().set({
         player2: n2,
         player1: n1,
@@ -323,7 +319,6 @@ function clearFields () {
   $("#name").html("");
   $("#email").html("");
   $("#password").html("");
-  //console.log("clear input fields");
 }
 //-----------------------------------------------------------------
 // run messaging here 
@@ -332,7 +327,6 @@ function startMessage() {
   $("#textBtn1").on("click", function message(chat) {
     event.preventDefault();
     var currentMessage = name1 + ": " + $("#mytext").val().trim() + "<br>";
-    //console.log(name1 + ": " + $("#mytext").val().trim());
     $("#mytext").html(" ");
     messageArray.push(currentMessage);
     dataRef.ref().update({
@@ -342,7 +336,6 @@ function startMessage() {
   $("#textBtn2").on("click", function message(chat) {
     event.preventDefault();
     var currentMessage = name2 + ": " + $("#mytext").val().trim() + "<br>";
-    //console.log(name2 + ": " + $("#mytext").val().trim());
     $("#mytext").html("");
     messageArray.push(currentMessage);
     dataRef.ref().update({
@@ -375,7 +368,6 @@ function verifyEmail (user) {
 //-----------------------------------------------------------------
 // set firebase data and user names for gameplay
 function signupIn () {
-    //console.log("set up database in signin function");
     clearFields();
     setPlayers();
     if (computer) {
@@ -407,7 +399,6 @@ function displayPlayer1 () {
 function rock2() {
     picTwo = "assets/images/rock.jpg";
     choice2 = "rock";
-    console.log(choice2+ " pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -419,7 +410,6 @@ function rock2() {
 function rock1() {
     picOne = "assets/images/rock.jpg";
     choice1 = "rock";
-    console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
       });
@@ -429,7 +419,6 @@ function rock1() {
 function paper2() {
     picTwo = "assets/images/paper.jpg";
     choice2 = "paper";
-    console.log(choice2 + " Pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2 
       });
@@ -441,7 +430,6 @@ function paper2() {
 function paper1() {
     picOne = "assets/images/paper.jpg";
     choice1 = "paper";
-    console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
       });
@@ -451,7 +439,6 @@ function paper1() {
 function scissors2() {
     picTwo = "assets/images/scissors2.jpg";
     choice2 = "scissors";
-    console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -463,7 +450,6 @@ function scissors2() {
 function scissors1() {
     picOne = "assets/images/scissors2.jpg";
     choice1 = "scissors";
-    console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
       });
@@ -473,7 +459,6 @@ function scissors1() {
 function lizard2() {
     picTwo = "assets/images/lizard.jpg";
     choice2 = "lizard";
-    console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -485,7 +470,6 @@ function lizard2() {
 function lizard1() {
     picOne = "assets/images/lizard.jpg";
     choice1 = "lizard";
-    console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
       });
@@ -495,7 +479,6 @@ function lizard1() {
 function spock2() {
     picTwo = "assets/images/spock.jpg";
     choice2 = "spock";
-    console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -507,7 +490,6 @@ function spock2() {
 function spock1() {
     picOne = "assets/images/spock.jpg";
     choice1 = "spock";
-    console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
       });
@@ -533,20 +515,20 @@ function updatecompStats () {
     $("#player1").append("<h3>Losses: " + closs + "</h3><br>");
     $("#player1").append("<h3>Ties: " + ctie + "</h3>");
 }
+
 //-----------------------------------------------------------------
 // have the computer randomly pick a response
 function computerPick () {
-  
     var temp = Math.floor(Math.random()*5);
     computerChoice = computerChoices[temp];
-    //console.log(computerChoice);
 }
+
 //-----------------------------------------------------------------
 // pick random name for person if they don't provide one
 function namePick () {
     myName = nameArray[Math.floor(Math.random()*17)];
-    //console.log(myName);
 }
+
 //-----------------------------------------------------------------
 //set up a interval timer
 var intervalID;
@@ -562,10 +544,8 @@ function setIntervalX(callback, delay, repetitions) {
 //-----------------------------------------------------------------
 //run logic to play locally against the computer & update screen
 function compShoot() {
-  //console.log("running computer shoot")
     if (computer) {
       computerPick ();
-      console.log(computerChoice);
     
       switch (computerChoice) {
         case "rock":
@@ -634,9 +614,7 @@ function compShoot() {
 // run game logic for 2 player game and update screen
 var a = 0;
 function shoot() {
-    console.log("running shoot")
     if ((choice1 != "x") && (choice2 != "x") && (n1 === true) && (n2 ===true)) {
-      console.log("in Shoot picOne = " + picOne + " picTwo = " + picTwo);
       if (player === "pl2") {
         dataRef.ref().update({
           uPic: picTwo
@@ -646,9 +624,6 @@ function shoot() {
             opPic: picOne
           });
       }
-      
-      console.log("updating pic 1: " + picOne);
-      console.log("updating pic 2: " + picTwo);
       
       if (choice1 === choice2) {
           
@@ -716,7 +691,6 @@ function shoot() {
 //-----------------------------------------------------------------
 
 function resetGame() {
-  console.log("running reset");
   a = 0;
   countclicks = 0;
   p2winCount = 0;
@@ -732,7 +706,6 @@ function resetGame() {
   picTwo = startimg;
   choice1 = "x";
   choice2 = "x";
-  console.log("updating choice1, choice2, picOne, picTwo");
   dataRef.ref().update({
     choice1: choice1,
     choice2: choice2,
