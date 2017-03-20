@@ -30,6 +30,7 @@ var p2lossCount = 0;
 var p2tieCount = 0;
 var countclicks = 0;
 var computer = false;
+var player = "";
 var cwin = 0;
 var closs = 0;
 var ctie = 0;
@@ -161,6 +162,7 @@ var messageRef = dataRef.ref().child("message");
       
       if (n2) { 
         n2 = false;
+        player = "";
         $("#logout2").css("display", "none");
         $(".loggedIn").css("display", "none");
         var tempMessage = name2 + " has left the game.<br>"
@@ -271,6 +273,7 @@ function mylogIn () {
   if (!n2) {
     resetGame();
     n2 = true;
+    player = "pl2";
     name2 = $("#name").val().trim();
     name1 = "no one yet.."
     $(".loggedIn").css("display", "inline");
@@ -413,8 +416,8 @@ function displayPlayer1 () {
 //-----------------------------------------------------------------
 // if player 2 selects rock set choice
 function rock2() {
-    choice2 = "rock";
     picTwo = "assets/images/rock.jpg";
+    choice2 = "rock";
     console.log(choice2+ " pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2
@@ -425,8 +428,8 @@ function rock2() {
 }
 // if player 1 selects rock set choice
 function rock1() {
-    choice1 = "rock";
     picOne = "assets/images/rock.jpg";
+    choice1 = "rock";
     console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
@@ -435,8 +438,8 @@ function rock1() {
 //-----------------------------------------------------------------
 // if player 2 selects paper set choice
 function paper2() {
-    choice2 = "paper";
     picTwo = "assets/images/paper.jpg";
+    choice2 = "paper";
     console.log(choice2 + " Pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2 
@@ -447,8 +450,8 @@ function paper2() {
 }
 // if player 1 selects paper set choice
 function paper1() {
-    choice1 = "paper";
     picOne = "assets/images/paper.jpg";
+    choice1 = "paper";
     console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
@@ -457,8 +460,8 @@ function paper1() {
 //-----------------------------------------------------------------
 // if player 2 selects scissors set choice
 function scissors2() {
-    choice2 = "scissors";
     picTwo = "assets/images/scissors2.jpg";
+    choice2 = "scissors";
     console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
@@ -469,8 +472,8 @@ function scissors2() {
 }
 // if player 1 selects scissors set choice
 function scissors1() {
-    choice1 = "scissors";
     picOne = "assets/images/scissors2.jpg";
+    choice1 = "scissors";
     console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
@@ -479,8 +482,8 @@ function scissors1() {
 //-----------------------------------------------------------------
 // if player 2 selects lizard set choice
 function lizard2() {
-    choice2 = "lizard";
     picTwo = "assets/images/lizard.jpg";
+    choice2 = "lizard";
     console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
@@ -491,8 +494,8 @@ function lizard2() {
 }
 // if player 1 selects lizard set choice
 function lizard1() {
-    choice1 = "lizard";
     picOne = "assets/images/lizard.jpg";
+    choice1 = "lizard";
     console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
@@ -501,8 +504,8 @@ function lizard1() {
 //-----------------------------------------------------------------
 // if player 2 selects spock set choice
 function spock2() {
-    choice2 = "spock";
     picTwo = "assets/images/spock.jpg";
+    choice2 = "spock";
     console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
@@ -513,8 +516,8 @@ function spock2() {
 }
 // if player 1 selects spock set choice
 function spock1() {
-    choice1 = "spock";
     picOne = "assets/images/spock.jpg";
+    choice1 = "spock";
     console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
@@ -646,10 +649,16 @@ function shoot() {
     console.log("running shoot")
     if ((choice1 != "x") && (choice2 != "x") && (n1 === true) && (n2 ===true)) {
       console.log("in Shoot picOne = " + picOne + " picTwo = " + picTwo);
-      dataRef.ref().update({
-        uPic: picTwo,
-        opPic: picOne
+      if (player === "pl2") {
+        dataRef.ref().update({
+          uPic: picTwo
       });
+      } else {
+          dataRef.ref().update({
+            opPic: picOne
+          });
+      }
+      
       console.log("updating pic 1: " + picOne);
       console.log("updating pic 2: " + picTwo);
       
