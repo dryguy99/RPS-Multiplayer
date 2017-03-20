@@ -646,12 +646,12 @@ function shoot() {
     console.log("running shoot")
     if ((choice1 != "x") && (choice2 != "x") && (n1 === true) && (n2 ===true)) {
       console.log("in Shoot picOne = " + picOne + " picTwo = " + picTwo);
-      console.log("updating pic 2: " + picTwo);
       dataRef.ref().update({
         uPic: picTwo,
         opPic: picOne
       });
       console.log("updating pic 1: " + picOne);
+      console.log("updating pic 2: " + picTwo);
       
       if (choice1 === choice2) {
           //console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
