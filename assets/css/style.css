@@ -107,10 +107,13 @@ div.exception {
 	margin: 1vh;
 	overflow: auto;
 }
+textarea#mytext {
+background: #e6f9ff;
+font-weight: 600;
+}
 
 #text {
-	background: #e6f9ff;
-	font-weight: 600;
+	font-weight: 500;
 	max-height: 100px;
 	margin: 0px auto;
 	display: inline;
