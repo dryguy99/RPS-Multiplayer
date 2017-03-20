@@ -547,12 +547,9 @@ function updatecompStats () {
 //-----------------------------------------------------------------
 // have the computer randomly pick a response
 function computerPick () {
-  var temp;
-    do {
-      temp = computerChoices[Math.floor(Math.random()*10)];
-    }
-    while  (temp > 5);
-    computerChoice = temp;
+  
+    var temp = Math.floor(Math.random()*5);
+    computerChoice = computerChoices[temp];
     //console.log(computerChoice);
 }
 //-----------------------------------------------------------------
@@ -579,6 +576,7 @@ function compShoot() {
   //console.log("running computer shoot")
     if (computer) {
       computerPick ();
+      console.log(computerChoice);
     
       switch (computerChoice) {
         case "rock":
@@ -595,6 +593,7 @@ function compShoot() {
           break;
         case "spock":
           picOne = "assets/images/spock.jpg";
+          break;
           return;
       }
       imgChange();

@@ -26,8 +26,8 @@ h3#p1, h3#p2 {
 	font-weight: 700;
 }
 img.mysize {
-	max-height: 300px;
-	max-width: 300px;
+	max-height: 220px;
+	max-width: 220px;
 }
 
 .mysize-btn {
