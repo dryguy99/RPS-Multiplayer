@@ -43,7 +43,7 @@ var runafter1change = true;
 var choice1 = "x";
 var choice2 = "x";
 var startimg = "assets/images/placeholder.jpeg";
-var emailArray = ["<br>Waiting for email Verification...", "<br>Waiting for email Verification.....", "<br>Waiting for email Verification.......", "<br>Waiting for email Verification.........", "<br>Waiting for email Verification...........", "<br>Waiting for email Verification.............", "<br>Waiting for email Verification..............."]
+var emailArray = ["<br>Waiting for email Verification...", "<br>Waiting for email Verification.....", "<br>Waiting for email Verification.......", "<br>Waiting for email Verification.........", "<br>Waiting for email Verification...........", "<br>Waiting for email Verification.............", "<br>Waiting for email Verification..............."];
 var messageArray = ["Start Chat:<br>"];
 //---------------------------------------------------------------
 // set listner values
@@ -93,6 +93,7 @@ var messageRef = dataRef.ref().child("message");
         shoot();
       }
     });
+
 //----------------------------------------------------------------  
     //update player 1 picture
     pic1Ref.on('value', function(snapshot) {
@@ -104,6 +105,7 @@ var messageRef = dataRef.ref().child("message");
       picTwo = snapshot.val();
       imgChange();
     });
+
 //-----------------------------------------------------------------
 // update chat
     messageRef.on('value', function(snapshot) {
@@ -112,9 +114,7 @@ var messageRef = dataRef.ref().child("message");
       for (i=0; i < messageArray.length; i++) {
         $(".myChat").prepend(messageArray[i]);
       }
-      
     })
-
 
 //-----------------------------------------------------------------
     // Get Elements
@@ -136,7 +136,7 @@ var messageRef = dataRef.ref().child("message");
         $("#logout1").css("display", "none");
         $(".loggedIn").css("display", "none");
         $(".loggedIn").html("");
-        var tempMessage = name1 + " has left the game.<br>"
+        var tempMessage = name1 + " has left the game.<br>";
         messageArray = [tempMessage];
         dataRef.ref().update({
           player1: n1,
@@ -154,7 +154,7 @@ var messageRef = dataRef.ref().child("message");
         player = "";
         $("#logout2").css("display", "none");
         $(".loggedIn").css("display", "none");
-        var tempMessage = name2 + " has left the game.<br>"
+        var tempMessage = name2 + " has left the game.<br>";
         messageArray = [tempMessage];
         $(".loggedIn").html("");
         dataRef.ref().update({
@@ -167,7 +167,7 @@ var messageRef = dataRef.ref().child("message");
      });
 //-----------------------------------------------------------------
     //add login event
-    btnLogin.addEventListener("click", e=> {
+    btnLogin.addEventListener("click", e => {
       // get email name & password
       const email = txtEmail.value;
       const pass = txtPassword.value;
@@ -324,10 +324,14 @@ function clearFields () {
 // run messaging here 
 // note: use id text to display, id mytext to get input, onclick id textbtn 
 function startMessage() {
-  $("#textBtn1").on("click", function message(chat) {
+  $("#textBtn1").on("click", function (chat) {
     event.preventDefault();
+    console.log(chat);
     var currentMessage = name1 + ": " + $("#mytext").val().trim() + "<br>";
-    $("#mytext").html(" ");
+    console.log("tryng again");
+    var form = document.getElementById("mytext");
+    console.log(chat);
+    chat.value = "";
     messageArray.push(currentMessage);
     dataRef.ref().update({
       message: messageArray
