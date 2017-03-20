@@ -339,6 +339,7 @@ function startMessage() {
     event.preventDefault();
     var currentMessage = name1 + ": " + $("#mytext").val().trim() + "<br>";
     console.log(name1 + ": " + $("#mytext").val().trim());
+    $("#mytext").empty();
     messageArray.push(currentMessage);
     dataRef.ref().update({
       message: messageArray
@@ -348,6 +349,7 @@ function startMessage() {
     event.preventDefault();
     var currentMessage = name2 + ": " + $("#mytext").val().trim() + "<br>";
     console.log(name2 + ": " + $("#mytext").val().trim());
+    $("#mytext").empty();
     messageArray.push(currentMessage);
     dataRef.ref().update({
       message: messageArray
