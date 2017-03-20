@@ -326,12 +326,8 @@ function clearFields () {
 function startMessage() {
   $("#textBtn1").on("click", function (chat) {
     event.preventDefault();
-    console.log(chat);
     var currentMessage = name1 + ": " + $("#mytext").val().trim() + "<br>";
-    console.log("tryng again");
-    var form = document.getElementById("mytext");
-    console.log(chat);
-    chat.value = "";
+    $("#mytext").val("");
     messageArray.push(currentMessage);
     dataRef.ref().update({
       message: messageArray
@@ -340,12 +336,11 @@ function startMessage() {
   $("#textBtn2").on("click", function message(chat) {
     event.preventDefault();
     var currentMessage = name2 + ": " + $("#mytext").val().trim() + "<br>";
-    $("#mytext").html("");
+    $("#mytext").val("");
     messageArray.push(currentMessage);
     dataRef.ref().update({
       message: messageArray
     });
-
   });
 }
 //-----------------------------------------------------------------
