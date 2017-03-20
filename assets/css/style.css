@@ -88,6 +88,12 @@ nav {
 #logout2 {
 	display: none;
 }
+#textBtn1 {
+	display: none;
+}
+#textBtn2 {
+	display: none;
+}
 div.exception {
 	line-height: 1.5;
 	background: #ffffb3;
@@ -95,8 +101,15 @@ div.exception {
 	font-weight: 700;
 	display: none;
 }
+.myChat {
+	background: url("../images/paper-bkgrd.png");
+	max-height: 10vh;
+	margin: 1vh;
+	overflow: auto;
+}
 
 #text {
 	max-height: 100px;
 	margin: 0px auto;
+	display: inline;
 }

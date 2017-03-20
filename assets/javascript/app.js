@@ -11,6 +11,7 @@
   firebase.initializeApp(config);
   var dataRef = firebase.database();
   var userAuth = firebase.auth();
+  
 //-----------------------------------------------------------------
 // set initial variables
 var name1 = "nobody";
@@ -42,6 +43,7 @@ var choice1 = "x";
 var choice2 = "x";
 var startimg = "assets/images/placeholder.jpeg";
 var emailArray = ["<br>Waiting for email Verification...", "<br>Waiting for email Verification.....", "<br>Waiting for email Verification.......", "<br>Waiting for email Verification.........", "<br>Waiting for email Verification...........", "<br>Waiting for email Verification.............", "<br>Waiting for email Verification..............."]
+var messageArray = ["Start Chat:<br>"];
 //---------------------------------------------------------------
 // set listner values
 var player2Ref = dataRef.ref('player2');
@@ -52,6 +54,8 @@ var user1Ref = dataRef.ref('userone');
 var user2Ref = dataRef.ref('usertwo');
 var pic1Ref = dataRef.ref('opPic');
 var pic2Ref = dataRef.ref('uPic');
+var messageRef = dataRef.ref().child("message");
+
 //---------------------------------------------------------------
 // check key firebase data values before login
 
@@ -95,7 +99,7 @@ var pic2Ref = dataRef.ref('uPic');
         shoot();
       }
     });
-//---------------------------------------------------------------   
+//----------------------------------------------------------------  
     //update player 1 picture
     pic1Ref.on('value', function(snapshot) {
       console.log(snapshot.val());
@@ -107,6 +111,19 @@ var pic2Ref = dataRef.ref('uPic');
       picTwo = snapshot.val();
       imgChange();
     });
+//-----------------------------------------------------------------
+// update chat
+    messageRef.on('value', function(snapshot) {
+      messageArray = snapshot.val();
+      console.log(messageArray);
+      $(".myChat").empty();
+      for (i=0; i < messageArray.length; i++) {
+        $(".myChat").append(messageArray[i]);
+      }
+      
+    })
+
+
 //-----------------------------------------------------------------
     // Get Elements
     const txtName = $("#name")[0];
@@ -127,8 +144,12 @@ var pic2Ref = dataRef.ref('uPic');
         $("#logout1").css("display", "none");
         $(".loggedIn").css("display", "none");
         $(".loggedIn").html("");
+        var tempMessage = name1 + " has left the game.<br>"
+        messageArray = [tempMessage];
         dataRef.ref().update({
-          player1: n1});
+          player1: n1,
+          message: messageArray
+        });
         console.log("updated player1 to firebase as false");
       }
       userAuth.signOut();
@@ -141,9 +162,13 @@ var pic2Ref = dataRef.ref('uPic');
         n2 = false;
         $("#logout2").css("display", "none");
         $(".loggedIn").css("display", "none");
+        var tempMessage = name2 + " has left the game.<br>"
+        messageArray = [tempMessage];
         $(".loggedIn").html("");
         dataRef.ref().update({
-          player2: n2});
+          player2: n2,
+          message: messageArray
+        });
         console.log("updated player2 to firebase as false");
       }
       userAuth.signOut();
@@ -244,9 +269,9 @@ function mylogIn () {
   
   if (!n2) {
     resetGame();
-    startMessage();
     n2 = true;
     name2 = $("#name").val().trim();
+    name1 = "no one yet.."
     $(".loggedIn").css("display", "inline");
     $(".loggedIn").html(name2 + " (logged in)");
     if (name2 === "") {
@@ -255,6 +280,9 @@ function mylogIn () {
         }
     $("#logout2").css("display", "inline");
     $("#logout1").css("display", "none");
+    $("#textBtn2").css("display", "inline");
+    $("#textBtn1").css("display", "none");
+    messageArray = ["Waiting for another player...<br>"];
     dataRef.ref().set({
         player2: n2,
         player1: n1,
@@ -263,9 +291,9 @@ function mylogIn () {
         uPic: startimg,
         opPic: startimg,
         usertwo: name2,
-        userone: name1
+        userone: name1,
+        message: messageArray
       });
-    imgChange();
     displayPlayer2 ();
     signupIn ();}
 
@@ -275,12 +303,17 @@ function mylogIn () {
     name1 = $("#name").val().trim();
     $(".loggedIn").css("display", "inline");
     $(".loggedIn").html(name1 + " (logged in)");
+    $("#textBtn2").css("display", "none");
+    $("#textBtn1").css("display", "inline");
     if (name1 === "") {
           namePick();
-          name2 = myName;
+          name1 = myName;
         }
+    messageArray = ["Start Chat:<br>"];
     dataRef.ref().update({
-        player1: n1
+        player1: n1,
+        userone: name1,
+        message: messageArray
     });
     $("#logout2").css("display", "none");
     $("#logout1").css("display", "inline");
@@ -302,7 +335,25 @@ function clearFields () {
 // run messaging here 
 // note: use id text to display, id mytext to get input, onclick id textbtn 
 function startMessage() {
+  $("#textBtn1").on("click", function message(chat) {
+    event.preventDefault();
+    var currentMessage = name1 + ": " + $("#mytext").val().trim() + "<br>";
+    console.log(name1 + ": " + $("#mytext").val().trim());
+    messageArray.push(currentMessage);
+    dataRef.ref().update({
+      message: messageArray
+    });
+  });
+  $("#textBtn2").on("click", function message(chat) {
+    event.preventDefault();
+    var currentMessage = name2 + ": " + $("#mytext").val().trim() + "<br>";
+    console.log(name2 + ": " + $("#mytext").val().trim());
+    messageArray.push(currentMessage);
+    dataRef.ref().update({
+      message: messageArray
+    });
 
+  });
 }
 //-----------------------------------------------------------------
 // turn off game display and turn on signin, turn off logout
@@ -331,19 +382,14 @@ function signupIn () {
     console.log("set up database in signin function");
     clearFields();
     setPlayers();
-
-    if (n1) {
-      dataRef.ref().update({
-        userone: name1
-      });
-      console.log("setup player 1: " + name1);
-    }
-
-    if (n2) {
-      dataRef.ref().update({
-        usertwo: name2
-      });
-      console.log("setup player 2: " + name2);
+    if (computer) {
+      $("#status").html("Ready to Play");
+    }else if (n2 && !n1) {
+      $("#status").html("Waitng for player another player");
+    }else if (n1 && n2) {
+      $("#status").html("Let's PLAY!");
+    }else {
+      $("#status").html("Waitng for player another player");
     }
 }
 //-----------------------------------------------------------------
@@ -363,7 +409,7 @@ function displayPlayer1 () {
 function rock2() {
     choice2 = "rock";
     picTwo = "assets/images/rock.jpg";
-    console.log(choice2);
+    console.log(choice2+ " pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -385,7 +431,7 @@ function rock1() {
 function paper2() {
     choice2 = "paper";
     picTwo = "assets/images/paper.jpg";
-    console.log(choice2);
+    console.log(choice2 + " Pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2 
       });
@@ -407,7 +453,7 @@ function paper1() {
 function scissors2() {
     choice2 = "scissors";
     picTwo = "assets/images/scissors2.jpg";
-    console.log(choice2);
+    console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -419,7 +465,7 @@ function scissors2() {
 function scissors1() {
     choice1 = "scissors";
     picOne = "assets/images/scissors2.jpg";
-    console.log(choice1 + " pic: " + picOne);
+    console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
       });
@@ -528,10 +574,12 @@ var a = 0;
 function shoot() {
     console.log("running shoot")
     if ((choice1 != "x") && (choice2 != "x") && (n1 === true) && (n2 ===true)) {
-      console.log("in Shoot picOne = " + picOne + " pictwo = " + picTwo);
+      console.log("in Shoot picOne = " + picOne + " picTwo = " + picTwo);
       dataRef.ref().update({
-        opPic: picOne,
         uPic: picTwo
+      });
+      dataRef.ref().update({
+        opPic: picOne
       });
       
       if (choice1 === choice2) {
@@ -588,6 +636,7 @@ function shoot() {
 //-----------------------------------------------------------------
 
 function resetGame() {
+  console.log("running reset");
   a = 0;
   countclicks = 0;
   p2winCount = 0;
@@ -604,17 +653,12 @@ function resetGame() {
   choice1 = "x";
   choice2 = "x";
   dataRef.ref().update({
+    choice1: choice1,
+    choice2: choice2,
+    uPic: picTwo,
     opPic: picOne
   });
-  dataRef.ref().update({
-    uPic: picTwo
-  });
-  dataRef.ref().update({
-    choice2: choice2
-  });
-  dataRef.ref().update({
-    choice1: choice1
-  });
+  
   updatep2Stats();
   if (computer) {
     name1 = "Computer";
@@ -679,12 +723,16 @@ function setPlayers () {
   console.log("display players names p1: "+name1+ " p2: "+name2);
   $("#p1").html(name1);
   $("#p2").html(name2);
+  if (computer) {
+    $("text").css("display", "none");
+  }
 }
 //-----------------------------------------------------------------
 // once loaded stet up game
 $(document).ready( function startGame() {
     $('#p1check').prop('checked', true);
     check();
+    startMessage();
     createButtons();
     setButtons();
 });
