@@ -284,6 +284,7 @@ function mylogIn () {
     $("#textBtn2").css("display", "inline");
     $("#textBtn1").css("display", "none");
     messageArray = ["Waiting for another player...<br>"];
+    console.log("setting initial values in firebase.")
     dataRef.ref().set({
         player2: n2,
         player1: n1,
@@ -387,6 +388,8 @@ function signupIn () {
     setPlayers();
     if (computer) {
       $("#status").html("Ready to Play");
+      name1 = "Computer"
+      setPlayers();
     }else if (n2 && !n1) {
       $("#status").html("Waitng for player another player");
     }else if (n1 && n2) {
@@ -412,7 +415,7 @@ function displayPlayer1 () {
 function rock2() {
     choice2 = "rock";
     picTwo = "assets/images/rock.jpg";
-    //console.log(choice2+ " pic2: " + picTwo);
+    console.log(choice2+ " pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -424,7 +427,7 @@ function rock2() {
 function rock1() {
     choice1 = "rock";
     picOne = "assets/images/rock.jpg";
-    //console.log(choice1 + " pic: " + picOne);
+    console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
       });
@@ -434,7 +437,7 @@ function rock1() {
 function paper2() {
     choice2 = "paper";
     picTwo = "assets/images/paper.jpg";
-    //console.log(choice2 + " Pic2: " + picTwo);
+    console.log(choice2 + " Pic2: " + picTwo);
     dataRef.ref().update({
         choice2: choice2 
       });
@@ -446,7 +449,7 @@ function paper2() {
 function paper1() {
     choice1 = "paper";
     picOne = "assets/images/paper.jpg";
-    //console.log(choice1 + " pic: " + picOne);
+    console.log(choice1 + " pic: " + picOne);
     dataRef.ref().update({
         choice1: choice1
       });
@@ -456,7 +459,7 @@ function paper1() {
 function scissors2() {
     choice2 = "scissors";
     picTwo = "assets/images/scissors2.jpg";
-    //console.log(choice2 + " pic2: " +picTwo);
+    console.log(choice2 + " pic2: " +picTwo);
     dataRef.ref().update({
         choice2: choice2
       });
@@ -468,7 +471,7 @@ function scissors2() {
 function scissors1() {
     choice1 = "scissors";
     picOne = "assets/images/scissors2.jpg";
-    //console.log(choice1 + " pic1: " + picOne);
+    console.log(choice1 + " pic1: " + picOne);
     dataRef.ref().update({
         choice1: choice1, 
       });
@@ -538,7 +541,7 @@ function compShoot() {
       }
       imgChange();
       if (computerChoice === choice2) {
-          console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
+          //console.log("you (right): " + choice2 + " them(left): " + choice1 + " tied");
           $("#status").html("It's a TIE");
           ctie++;
           p2tieCount++;
@@ -578,11 +581,11 @@ function shoot() {
     console.log("running shoot")
     if ((choice1 != "x") && (choice2 != "x") && (n1 === true) && (n2 ===true)) {
       console.log("in Shoot picOne = " + picOne + " picTwo = " + picTwo);
-      console.log("updating pic 2");
+      console.log("updating pic 2: " + picTwo);
       dataRef.ref().update({
         uPic: picTwo
       });
-      console.log("updating pic 1");
+      console.log("updating pic 1: " + picOne);
       dataRef.ref().update({
         opPic: picOne
       });
@@ -720,7 +723,6 @@ function setButtons() {
   $("#scissors2").on("click", function() {scissors2();});
   $("#scissors1").on("click", function() {scissors1();});
   $("#reset").on("click", function () {resetGame();});
-  $("#")
 
 }
 //-----------------------------------------------------------------
@@ -730,7 +732,7 @@ function setPlayers () {
   $("#p1").html(name1);
   $("#p2").html(name2);
   if (computer) {
-    $("text").css("display", "none");
+    $("#text").css("display", "none");
   }
 }
 //-----------------------------------------------------------------
